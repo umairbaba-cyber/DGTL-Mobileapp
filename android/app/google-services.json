@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1009382727104",
+    "project_id": "night-scan-b2573",
+    "storage_bucket": "night-scan-b2573.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1009382727104:android:01331b8de24f895dd0bc25",
+        "android_client_info": {
+          "package_name": "com.nightscan"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB30OfUmg4W5Ubp3A1vJpunPDuXJKux3uk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

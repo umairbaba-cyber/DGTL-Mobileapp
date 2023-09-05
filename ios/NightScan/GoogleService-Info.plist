@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyBBpu4W7e4KJPC3jrIvaom5MA16b1999A0</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1009382727104</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.app.rn.dgtl</string>
+	<key>PROJECT_ID</key>
+	<string>night-scan-b2573</string>
+	<key>STORAGE_BUCKET</key>
+	<string>night-scan-b2573.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1009382727104:ios:2355592d9f2bff61d0bc25</string>
+</dict>
+</plist>
