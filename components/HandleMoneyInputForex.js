@@ -9,8 +9,8 @@ export default function HandleMoneyInput({ currency,name,ApiToHit,onChangeEQV,on
         <View style={ styles.Container}>
             <Text style={styles.currencyName}>{currency}</Text>
             {/* <Image style={styles.imageStyle} source={require('../assets/Arrowgray.png')} /> */}
-            <TextInput keyboardType='number-pad' onChangeText={(t)=>onChangeAmount(t)} style={styles.inputStyle} />
-            <TextInput keyboardType='number-pad' onChangeText={(t)=>onChangeEQV(t)} style={styles.inputStyle} />
+            <TextInput keyboardType='decimal-pad' onChangeText={(t)=>onChangeAmount(t)} style={styles.inputStyle} />
+            <TextInput keyboardType='decimal-pad' onChangeText={(t)=>onChangeEQV(t)} style={styles.inputStyle} />
             
             
         

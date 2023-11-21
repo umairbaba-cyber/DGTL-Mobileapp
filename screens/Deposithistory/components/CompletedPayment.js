@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
 import { responsiveFontSize, responsiveHeight, responsiveScreenHeight, responsiveScreenWidth } from 'react-native-responsive-dimensions';
@@ -10,13 +11,14 @@ export default function CompletedPayment({ navigation, item, index }) {
                 keyExtractor={(item, index) => String(index)}
                 style={{ marginVertical: 2 }}
                 onPress={() => navigation.navigate('TellerViewDepositDetail', { selectedItem: index, status: 'approved',item:item })}>
-                <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center'}}>
                     <Image style={styles.imageStyle} source={require('../../../assets/approved.png')} />
                     <View style={{ marginLeft: 10, marginTop: responsiveHeight(0.5) }}>
-                        <Text style={{ ...styles.text, fontWeight: 'bold' }}>{item.total.value.toFixed(2)}</Text>
-                        <Text style={styles.text}> Deposited on {new Date(item.createdAt).toLocaleDateString()}</Text>
+                        <Text style={{ ...styles.text1, fontWeight: 'bold' }}>{item.total.value.toFixed(2)}</Text>
+                        <Text style={styles.text2}>Deposited on {moment(item.createdAt).format("YYYY/MM/DD")}</Text>
                     </View>
                 </View>
+                <View style={{backgroundColor: '#D3D3D3', height: 1, marginTop: 18, marginBottom: 18}}></View>
             </TouchableOpacity>
         );
 
@@ -24,14 +26,17 @@ export default function CompletedPayment({ navigation, item, index }) {
 
 const styles = StyleSheet.create({
     imageStyle: {
-        width: responsiveScreenWidth(8),
-        height: responsiveScreenHeight(8),
+        width: 28,
+        height: 28,
         resizeMode: 'contain'
     },
-    text: {
-        fontSize: responsiveFontSize(1.8),
-        fontWeight: '600',
-        color: '#000'
+    text1: {
+        fontSize: 15,
+        fontWeight: 'bold',
+        color: '#000',
+    },
+    text2: {
+        color: '#36454f'
     }
 })
 

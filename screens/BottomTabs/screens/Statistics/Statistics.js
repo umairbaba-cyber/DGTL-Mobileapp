@@ -1,5 +1,5 @@
 import React, { Component, useEffect, useState } from 'react';
-import { ScrollView,ActivityIndicator, View, Text, StyleSheet, TouchableOpacity, PermissionsAndroid } from 'react-native';
+import { ScrollView, ActivityIndicator, View, Text, StyleSheet, TouchableOpacity, PermissionsAndroid } from 'react-native';
 import CustomHeader from '../../../../components/CustomHeader';
 import { responsiveFontSize, responsiveHeight, responsiveScreenWidth } from 'react-native-responsive-dimensions';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -9,13 +9,13 @@ import axios from 'axios';
 import RNFetchBlob from "rn-fetch-blob";
 import { useSelector } from 'react-redux';
 import { CustomerReports, SupervisorReports, TellerReports } from '../../../GenrateReport/ReportsList';
-import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
+import { check, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import BasePath from '../../../../config/BasePath';
 
 
 export default function GenrateReport({ navigation }) {
   const [open, setOpen] = useState(false);
- const [isDownloading,setIsDownloading]=useState(false)
+  const [isDownloading, setIsDownloading] = useState(false)
   const [selectStartDate, setStartDate] = useState('');
   const [token, setToken] = useState('')
   const [selectEndDate, setEndDate] = useState('');
@@ -42,7 +42,7 @@ export default function GenrateReport({ navigation }) {
         setValue(TellerReports[0].value)
 
       } else {
-    
+
         setItems(SupervisorReports)
         setValue(SupervisorReports[0].value)
 
@@ -78,10 +78,10 @@ export default function GenrateReport({ navigation }) {
   }
 
   async function FilterResult(token, start, end, value) {
-console.log('token',token)
-console.log('start',start)
-console.log('end',end)
-console.log(BasePath)
+    console.log('token', token)
+    console.log('start', start)
+    console.log('end', end)
+    console.log(BasePath)
 
     if (value == null) {
       alert('Please Select Report Type')
@@ -103,7 +103,7 @@ console.log(BasePath)
     }
     ).then(res => {
       const { code, data } = res.data
-      console.log('File ur',data)
+      console.log('File ur', data)
       setFileGenrated(false)
       setIsDownloading(false)
       setConvertTO(data)
@@ -147,19 +147,19 @@ console.log(BasePath)
   //   }
   // };
 
-  function startDownload(file){
-    console.log('File',file)
+  function startDownload(file) {
+    console.log('File', file)
     setIsDownloading(true)
     setTimeout(() => {
-    DownloadFileAs(file)
-      
+      DownloadFileAs(file)
+
     }, 1000);
   }
 
   function DownloadFileAs(file) {
-    
-  
-  
+
+
+
     try {
       let date = new Date();
       // Image URL which we want to download
@@ -191,7 +191,7 @@ console.log(BasePath)
       config(options)
         .fetch('GET', File_URL)
         .then(res => {
-        
+
           setIsDownloading(false)
           // Showing alert after successful downloading
           alert(`File Saved Successfully.`);
@@ -304,17 +304,17 @@ console.log(BasePath)
               <Text style={styles.txt}>Genrate Report</Text>
             </TouchableOpacity> :
             <>
-            {isDownloading?
-            <ActivityIndicator/>
-            :
-            <View>
-              <TouchableOpacity onPress={() => startDownload(convertTo.downloadCSV)} style={{ ...styles.downbtn, alignSelf: 'center', width: '80%', height: 50 }}>
-                <Text style={styles.txt}>Save as CSV</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => startDownload(convertTo.downloadPDF)} style={{ ...styles.downbtn, alignSelf: 'center', width: '80%', height: 50 }}>
-                <Text style={styles.txt}>Save as Pdf</Text>
-              </TouchableOpacity>
-            </View>}
+              {isDownloading ?
+                <ActivityIndicator />
+                :
+                <View>
+                  <TouchableOpacity onPress={() => startDownload(convertTo.downloadCSV)} style={{ ...styles.downbtn, alignSelf: 'center', width: '80%', height: 50 }}>
+                    <Text style={styles.txt}>Save as CSV</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => startDownload(convertTo.downloadPDF)} style={{ ...styles.downbtn, alignSelf: 'center', width: '80%', height: 50 }}>
+                    <Text style={styles.txt}>Save as Pdf</Text>
+                  </TouchableOpacity>
+                </View>}
             </>
           }
         </View>

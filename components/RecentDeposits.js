@@ -1,62 +1,75 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Dimensions, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { responsiveFontSize, responsiveHeight, responsiveScreenHeight, responsiveScreenWidth, responsiveWidth } from 'react-native-responsive-dimensions';
 import ProgressCircle from 'react-native-progress-circle'
 import PendingPayment from './../screens/Deposithistory/components/PendingPayment'
 const { width, height } = Dimensions.get('window')
 import { useSelector } from 'react-redux';
+import moment from 'moment';
 
-export default function RecentDeposits({ Deposits, navigation, role }) {
+export default function RecentDeposits({ Deposits,data, navigation, role }) {
     const CurrencySymbole = useSelector(
         state => state?.Main?.User?.data?.company.localCurrency,
-      );
-      const currencyArray = CurrencySymbole.split('-');
+    );
+    const currencyArray = CurrencySymbole.split('-');
 
+    // console.log("data ----", data);
+    // console.log('Deposits --- ', JSON.stringify(Deposits));
     function FilertPending() {
         return (
             <>
                 {role == "customer" ?
                     <></> :
                     <View>
-                       {FilterList(navigation)}
+                        {FilterList(navigation)}
                     </View>
                 }
             </>
         )
     }
 
-    function FilterList( navigation ) {
-       
+    const getIndex = (id) => {
+        const index = data.findIndex((e) => e._id === id);
+        if (index !== -1) {
+            return index;
+        } else {
+            console.log(`Object with id ${id} not found in your data`);
+            return 0;
+        }
+    }
+
+    function FilterList(navigation) {
+
         let isEmpty = Deposits.find(item => {
             if (item.ScannedByTeller == false) {
                 return true
             }
         });
-       
 
-        if (Deposits.length < 1) {
+
+        if (data.length < 1) {
             return (
                 <View style={{ height: responsiveHeight(30), justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={{color:'#000'}}>No Pending Deposit </Text>
+                    <Text style={{ color: '#000' }}>No Pending Deposit </Text>
                 </View>
             )
         } else {
             if (isEmpty == undefined) {
                 return (
                     <View style={{ height: responsiveHeight(15), justifyContent: 'center', alignItems: 'center' }}>
-                        <Text style={{color:'#000'}}>No Pending Deposit </Text>
+                        <Text style={{ color: '#000' }}>No Pending Deposit </Text>
                     </View>
                 )
             } else {
                 return (
                     <>
-                  
-                        {Deposits.map((item, index) => {
-                            console.log('pending deposits item data',item)
-                            if(index<3)
-                            return(
-                             <PendingPayment  index={index} item={item} navigation={navigation} />
-                            )
+
+                        {data.map((item, index) => {
+                            // console.log('pending deposits item data', item)
+                            if (index < 3)
+                                return (
+                                    <PendingPayment index={index} item={item} navigation={navigation} />
+                                )
                         })}
                     </>
                 )
@@ -69,56 +82,54 @@ export default function RecentDeposits({ Deposits, navigation, role }) {
 
     return (
         <View >
-            {Deposits.length < 1 ?
+            {data.length < 1 ?
                 <View style={{ justifyContent: 'center', alignItems: 'center', height: responsiveHeight(7), }}>
-                    <Text style={{color:'#000'}}>No Recent Deposits Yet</Text>
+                    <Text style={{ color: '#000' }}>No Recent Deposits Yet</Text>
                 </View>
                 :
                 <>
-                    {Deposits.map((item, index) => {
-                        // console.log('this is item',item)
+                    {data?.map((item, index) => {
+                        // console.log('this is item', item)
                         if (index < 3)
 
                             return (
-                                <>
+                                <View key={item._id.toString()}>
                                     {
                                         role == "customer" ?
 
                                             <TouchableOpacity
+                                                key={item._id}
                                                 keyExtractor={(item, index) => String(index)}
-                                                style={{ marginVertical: 2 }}
-                                                onPress={() => navigation.navigate('CustomerViewDepositDetail', { selectedItem: index,detail:'Monthly',item })}
+                                                style={{}}
+                                                onPress={() => navigation.navigate('CustomerViewDepositDetail', { selectedItem: index, detail: 'Monthly', item })}
                                             >
                                                 <View style={styles.recentDepositContainer}>
 
-                                                    {item.ScannedByTeller ?
+                                                    {item.ScannedByTeller && item.ScannedBySupervisor?
                                                         <>
                                                             <Image style={styles.imageStyle} source={require('../assets/dgtl_app_deposits.png')} />
                                                             <View style={{ marginLeft: 10 }}>
-                                                                <Text style={styles.text}>{currencyArray[1]+item.total.value.toFixed(2)}</Text>
-                                                                <Text style={styles.text}> Deposited on {new Date(item.createdAt).toLocaleDateString()},{new Date(item.createdAt).toLocaleTimeString()}</Text>
+                                                                <Text style={styles.text1}>{currencyArray[1] + item.total.value.toFixed(2)}</Text>
+                                                                <Text style={styles.text2}>Deposited on {moment(item.createdAt).format('YYYY/MM/DD')}, {new Date(item.createdAt).toLocaleTimeString()}</Text>
                                                             </View>
                                                         </>
                                                         :
                                                         <>
                                                             <Image style={styles.imageStyle} source={require('../assets/dgtl_app_pending.png')} />
                                                             <View style={{ marginLeft: 10 }}>
-                                                                <Text style={{ ...styles.text, color: '#FBCD2A',fontWeight:'bold' }}>{currencyArray[1]+item.total.value.toFixed(2)}</Text>
-                                                                <Text style={{ ...styles.text, color: 'black',fontWeight: 'normal' }}> Pending from  {new Date(item.createdAt).toLocaleDateString()},{new Date(item.createdAt).toLocaleTimeString()} </Text>
+                                                                <Text style={{ ...styles.text1, color: '#ED7221', }}>{currencyArray[1] + item.total.value.toFixed(2)}</Text>
+                                                                <Text style={{ ...styles.text2, }}>Pending from {moment(item.createdAt).format('YYYY/MM/DD')}, {new Date(item.createdAt).toLocaleTimeString()} </Text>
                                                             </View>
                                                         </>
                                                     }
-
                                                 </View>
+                                                <View style={{ backgroundColor: '#D3D3D3', height: 1, marginTop: 18, marginBottom: 18 }}></View>
                                             </TouchableOpacity> :
                                             <>
 
-
-
-
                                             </>
                                     }
-                                </>
+                                </View>
                             )
 
                     })}
@@ -180,7 +191,7 @@ const styles = StyleSheet.create({
     },
     recentDepositContainer: {
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     eyeImageStyles: {
         height: 40,
@@ -245,7 +256,6 @@ const styles = StyleSheet.create({
         marginVertical: 5,
         flexDirection: 'row',
         alignItems: 'center'
-
     },
     RecentDeposit: {
         fontSize: responsiveFontSize(4),
@@ -256,20 +266,22 @@ const styles = StyleSheet.create({
     viewAllDeposit: {
         marginLeft: responsiveScreenWidth(2.0),
         color: '#3badfb',
-
-
     },
     imageStyle: {
-        width: responsiveScreenWidth(10),
-        height: responsiveScreenHeight(10),
+        width: 28,
+        height: 28,
         resizeMode: 'contain'
     },
-    text: {
-        fontSize: responsiveFontSize(2.0),
-        fontWeight: '600',
+    text1: {
+        fontSize: 15,
+        fontWeight: 'bold',
         color: '#000'
-    }
-
+    },
+    text2: {
+        fontSize: 13,
+        color: '#36454f',
+        marginTop: 2
+    },
 })
 
 
