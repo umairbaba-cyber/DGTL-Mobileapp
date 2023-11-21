@@ -1,5 +1,5 @@
 import React, { Component, useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity, Image, StatusBar } from 'react-native';
 import CustomHeader from '../../components/CustomHeader';
 import { responsiveFontSize, responsiveScreenWidth, responsiveHeight, responsiveWidth, responsiveScreenHeight } from 'react-native-responsive-dimensions';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -11,8 +11,8 @@ const NotifiDetail = ({ navigation, route }) => {
 
     const CurrencySymbole = useSelector(
         state => state?.Main?.User?.data?.company.localCurrency,
-      );
-      const currencyArray = CurrencySymbole.split('-');
+    );
+    const currencyArray = CurrencySymbole.split('-');
 
     const type = useSelector((state) => state?.Main?.User?.data?.userData?.accountType)
     // console.log('checktype',type)
@@ -22,7 +22,7 @@ const NotifiDetail = ({ navigation, route }) => {
     const companyName = route?.params?.item?.qr_data[0]?.company_data[0]?.companyName
     const accountNumber = route?.params?.item?.qr_data[0]?.customer_data[0]?.accountNumber
     customerName = route?.params?.item?.qr_data[0]?.customer_data[0]?.name
-    const abbrevation = useSelector(state =>state?.Main?.User?.data?.company?.abbrevation);
+    const abbrevation = useSelector(state => state?.Main?.User?.data?.company?.abbrevation);
     // console.log('accontNumber check', accountNumber)
     const createdAt = route?.params?.item?.qr_data[0]?.createdAt
     const total = route?.params?.item?.qr_data[0]?.total?.value
@@ -30,7 +30,11 @@ const NotifiDetail = ({ navigation, route }) => {
     const Fx = route?.params?.item?.qr_data[0]?.FX
     const checks = route?.params?.item?.qr_data[0]?.checks[0]
     const forcheck = route?.params?.item
+    const ScannedByTeller = route?.params?.item?.qr_data[0]?.ScannedByTeller;
+    const ScannedBySupervisor = route?.params?.item?.qr_data[0]?.ScannedBySupervisor;
     console.log('params data now', forcheck)
+    console.log('data -----',  ScannedByTeller)
+    console.log('data -----',  ScannedBySupervisor)
 
     useEffect(() => {
         const stateInterval = setTimeout(() => {
@@ -40,55 +44,171 @@ const NotifiDetail = ({ navigation, route }) => {
         }, 1500);
         return () => clearInterval(stateInterval)
     }, [])
+
+    console.log('total ---', total);
+
+    const getCoins = (name, value) => {
+        let n = 0;
+        if (name === "X100") {
+            n = 'x' + value / 100;
+        } else if (name === 'X50') {
+            n = 'x' + value / 50
+        } else if (name === 'X20') {
+            n = 'x' + value / 20
+        } else if (name === 'X10') {
+            n = 'x' + value / 10
+        } else if (name === 'X5') {
+            n = 'x' + value / 5
+        } else if (name === 'Coins CA$1') {
+            n = currencyArray[1] + ' ' + value
+        } else if (name === 'Coins') {
+            n = currencyArray[1] + ' ' + value
+        } else {
+            n = currencyArray[1] + ' ' + value
+        }
+        return n;
+    }
+
+    const XCD_Without_Zeroes = item?.Xcd.filter((e) => e.value !== 0);
+    console.log('XCD_With_Zeroes', item);
+    console.log('XCD_Without_Zeroes', XCD_Without_Zeroes);
+
+    const totalAmountFooter = (title, amount) => {
+        return (
+            <View>
+                <View style={{ backgroundColor: '#D3D3D3', height: 1, marginTop: 18, marginBottom: 10 }}></View>
+                <Text style={styles.currencyLabel}>{title}</Text>
+                <Text style={styles.currencyAmount}>{amount}</Text>
+                <View style={{ backgroundColor: '#D3D3D3', height: 1, marginTop: 10, marginBottom: 18 }}></View>
+            </View>
+        )
+    }
+
+    const getTotalAmount = (data, key) => {
+        let total = 0;
+        for (const item of data) {
+            total += item[key]
+        }
+        return currencyArray[1] + ' ' + total;
+    };
+
     if (loading) {
         return (
             <View style={{ flex: 1, backgroundColor: '#fff', justifyContent: 'center', alignItems: 'center' }}>
                 {/* <ActivityIndicator size={'large'} /> */}
-               
-                <Image source={require('../../assets/dgtl_icon_610.png')} 
-                style={{height:70,width:70,borderRadius:50}} 
-                resizeMode='contain'/>
-                 <Text style={{fontWeight:'bold',fontSize:responsiveFontSize(1.5),color:"#18193F"}}>Loading...</Text>
+
+                <Image source={require('../../assets/dgtl_icon_610.png')}
+                    style={{ height: 70, width: 70, borderRadius: 50 }}
+                    resizeMode='contain' />
+                <Text style={{ fontWeight: 'bold', fontSize: responsiveFontSize(1.5), color: "#18193F" }}>Loading...</Text>
             </View>
         )
     }
     else {
         return (
             <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
-                <View style={styles.topDistance} />
-                <View style={{ marginHorizontal: responsiveWidth(4) }}>
+                {/* <View style={styles.topDistance} /> */}
+                <StatusBar backgroundColor={'#EBF3EF'} barStyle={'dark-content'} />
+                <View style={{ backgroundColor: '#EBF3EF', paddingHorizontal: responsiveScreenWidth(4), paddingBottom: 30, }}>
                     <CustomHeader name={'Deposit Detail'} navigation={navigation} />
-                </View>
-
-                {/* <View style={styles.monthDeposit}>
-                    <Text style={styles.monthDepositMoney}>EC $ {"DepositDetail?.total.value"}</Text>
-                    <Text style={styles.monthDepositDescription}>
-                        <Text style={{ fontWeight: '700' }}>{"DepositDetail.company[0].companyName"}</Text> {`\n`}Acct# {accountNumber}...{`\n`}<Text style={{ fontWeight: '700' }}>{new Date("DepositDetail.createdAt").toDateString()}</Text></Text>
-                </View> */}
-                <View style={styles.monthDeposit}>
-                    <View>
-                        <Text style={styles.monthDepositMoney}>{currencyArray[1]+' '+total?.toFixed(2)}</Text>
-                    </View>
-                    <View style={styles.monthDepositDescription}>
-                        <Text style={{ fontWeight: '700', textTransform: 'uppercase', fontSize: responsiveFontSize(2.0), color: "#000" }}>{customerName} </Text>
-                        <Text style={{ textTransform: 'uppercase', fontSize: responsiveFontSize(2.0), color: "#000" }}>Acct# {accountNumber}</Text>
-                        <Text style={{ fontWeight: '700', color: "#000" }}>{new Date(createdAt).toDateString()}</Text>
-                        {type == 'customer' ? <></> :
-                            <>
-                                <TouchableOpacity onPress={() => navigation.replace('QrCode')} style={{ width: 100, height: 45, justifyContent: 'center', alignItems: 'center', backgroundColor: '#36C4F1', marginTop: 10 }}>
-                                    <Text style={{ color: '#18193F', fontWeight: '700' }}>Verify</Text>
-                                </TouchableOpacity>
-                            </>
-                        }
-
+                    <View style={styles.monthDeposit}>
+                        <Text style={styles.monthDepositMoney}>
+                            {currencyArray[1]} {total ? total?.toFixed(2) : 0}
+                        </Text>
+                        <View style={{ marginTop: 10, alignItems: 'center' }}>
+                            <Text
+                                style={[styles.monthDepositDescription, { fontWeight: 'bold' }]}>
+                                {customerName}
+                            </Text>
+                            <Text style={styles.monthDepositDescription}>
+                                Account Number: {accountNumber}
+                            </Text>
+                            <Text
+                                style={[styles.monthDepositDescription, { fontWeight: 'bold' }]}>
+                                {new Date(createdAt).toDateString()}
+                            </Text>
+                        </View>
                     </View>
                 </View>
 
                 <View style={{ flex: 1, }}>
+                    <View style={styles.discrepancy}>
+                        <View style={styles.discrepancyContainer}>
+                            <View style={{ flexDirection: 'row' }}>
+                                <Text style={styles.subHeading}>{'ID: '}</Text>
+                                <Text style={styles.normalTxt}>{
+                                    abbrevation.concat(
+                                        item?.bagID?.slice(
+                                            item?.bagID?.length - 10 + abbrevation.length,
+                                            item?.bagID?.length,
+                                        ),
+                                    )}</Text>
+                            </View>
+                            <View style={{ flexDirection: 'row', }}>
+                                <Text style={styles.subHeading}>{'Discrepancies: '}</Text>
+                                <Text style={styles.normalTxt}>{item?.discrepancies ? `${item?.discrepancies}` : "No"}</Text>
+                            </View>
+                        </View>
+                        {item?.discrepancies &&
+                            <>
+                                <View style={styles.discrepancyContainer}>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Text style={styles.subHeading}>{'Type: '}</Text>
+                                        <Text style={styles.normalTxt}>{`${item?.discrepanciesType}`}</Text>
+                                    </View>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Text style={styles.subHeading}>{'Amount: '}</Text>
+                                        <Text style={styles.normalTxt}>{`${item?.discrepanciesAmount}`}</Text>
+                                    </View>
+                                </View>
+                                <Text style={[styles.subHeading, { marginTop: responsiveHeight(0.8) }]}>{'Notes:'}</Text>
+                                <Text style={[styles.normalTxt, { marginTop: responsiveHeight(0.8) }]}>
+                                    {`${item?.discrepanciesNote}`}
+                                </Text>
+                            </>
+                        }
+                        <View style={{ flexDirection: 'row', marginTop: responsiveHeight(0.8) }}>
+                            <Text style={styles.subHeading}>{'Status: '}</Text>
+                            <Text style={styles.normalTxt}>{item?.status ? `${item?.status}` : 'pending'}</Text>
+                        </View>
+                    </View>
                     <View style={{ flexDirection: 'row', marginTop: 20, alignItems: 'center', justifyContent: 'space-between' }}>
 
                         <Text style={styles.breakDown}>Breakdown</Text>
 
+                        {type == 'customer' ? <></> :
+                            <>
+                                {type === "teller" && !ScannedByTeller && !ScannedBySupervisor ? (
+                                    <TouchableOpacity
+                                        onPress={() => navigation.replace('QrCode', { BagID: BigID })}
+                                        style={{
+                                            width: 100,
+                                            height: 45,
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            backgroundColor: '#36C4F1',
+                                            right: responsiveWidth(10),
+                                        }}
+                                    >
+                                        <Text style={{ color: '#18193F', fontWeight: '700' }}>Verify</Text>
+                                    </TouchableOpacity>
+                                ) : type === "supervisor" && !ScannedBySupervisor ? (
+                                    <TouchableOpacity
+                                        onPress={() => navigation.replace('QrCode', { BagID: BigID })}
+                                        style={{
+                                            width: 100,
+                                            height: 45,
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            backgroundColor: '#36C4F1',
+                                            right: responsiveWidth(10),
+                                        }}
+                                    >
+                                        <Text style={{ color: '#18193F', fontWeight: '700' }}>Verify</Text>
+                                    </TouchableOpacity>
+                                ) : null}
+                            </>
+                        }
 
                     </View>
                     {item?.Xcd?.length > 0 ?
@@ -101,16 +221,17 @@ const NotifiDetail = ({ navigation, route }) => {
 
                                 </View>
                             </View>
-                            <View style={{ marginHorizontal: responsiveWidth(7) }}>
-                                {item?.Xcd?.map((item, index) => {
+                            <View style={{ marginHorizontal: responsiveWidth(8) }}>
+                                {XCD_Without_Zeroes?.map((item, index) => {
                                     return (
-                                        <View key={index} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                                            <Text style={{ fontSize: responsiveFontSize(2.1), color: '#000', fontWeight: '700', width: responsiveWidth(20) }}>{item.name}</Text>
+                                        <View key={'lcl' + index} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                                            <Text style={styles.column1}>{item.name} </Text>
                                             <Image style={styles.imageStyle} source={require('../../assets/rightarrow.png')} />
-                                            <Text style={{ fontSize: responsiveFontSize(2.1), color: '#000', fontWeight: '700', width: responsiveWidth(40),textAlign:"center" }}>{currencyArray[1]+item.value}</Text>
+                                            <Text style={styles.column2}>{getCoins(item.name, item.value)}</Text>
                                         </View>
                                     )
                                 })}
+                                {totalAmountFooter('Total Local Currency', getTotalAmount(XCD_Without_Zeroes, 'value'))}
                             </View>
                         </> :
                         <></>
@@ -119,16 +240,18 @@ const NotifiDetail = ({ navigation, route }) => {
                         <>
                             <Text style={styles.xcd}>FX</Text>
 
-                            <View style={{ marginHorizontal: responsiveWidth(7) }}>
+                            <View style={{ marginHorizontal: responsiveWidth(8) }}>
                                 {item?.FX?.map((item, index) => {
                                     return (
-                                        <View key={index} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',  }}>
-                                            <Text style={{ fontSize: responsiveFontSize(2.1), color: '#000', fontWeight: '700', width: responsiveWidth(20) }}>{item.name}</Text>
+                                        <View key={'fx' + index} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', }}>
+                                            <Text style={styles.column1}>{item.name}</Text>
                                             <Image style={styles.imageStyle} source={require('../../assets/rightarrow.png')} />
-                                            <Text style={{ fontSize: responsiveFontSize(2.1), color: '#000', fontWeight: '700', width: responsiveWidth(40),textAlign:'center' }}>{currencyArray[1]+item?.EQV}</Text>
+                                            <Text style={styles.column2}>{currencyArray[1] + ' ' + item?.EQV}
+                                            </Text>
                                         </View>
                                     )
                                 })}
+                                {totalAmountFooter('Total Foreign Exchange', getTotalAmount(item?.FX, 'EQV'))}
                             </View>
 
                         </> :
@@ -141,25 +264,28 @@ const NotifiDetail = ({ navigation, route }) => {
                     {item?.checks?.length > 0 ?
                         <>
                             <Text style={styles.xcd}>CHEQUES</Text>
-                            {item?.checks.map((item, index) => {
-                                return (
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around',marginLeft:responsiveWidth(0),marginRight:responsiveWidth(14) }}>
-                                        <Text style={{ fontSize: responsiveFontSize(2.1), color: '#000', fontWeight: '700',  }}>{item.checkNumber.length >=4 ? `${item.checkNumber.slice(0,5)}...` :item.checkNumber }</Text>
-                                        <Image style={styles.imageStyle} source={require('../../assets/rightarrow.png')} />
-                                        <Text style={{ fontSize: responsiveFontSize(2.1), color: '#000', fontWeight: '700',textAlign:'center' }}>{item?.bank_UC}</Text>
-                                        <Text style={{ fontSize: responsiveFontSize(2.1), color: '#000', fontWeight: '700',textAlign:'center' }}>{currencyArray[1]+item.checkAmount}</Text>
-                                    </View>
-                                )
-                            })}
+                            <View style={{ marginHorizontal: responsiveWidth(8) }}>
+                                {item?.checks.map((item, index) => {
+                                    return (
+                                        <View key={'cks' + index} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', }}>
+                                            <Text style={styles.column1}>{item.checkNumber.length >= 4 ? `${item.checkNumber.slice(0, 5)}...` : item.checkNumber}</Text>
+                                            <Image style={styles.imageStyle} source={require('../../assets/rightarrow.png')} />
+                                            <Text style={styles.column3}>{item?.bank_UC}</Text>
+                                            <Text style={styles.column3}>{currencyArray[1] + ' ' + item.checkAmount}</Text>
+                                        </View>
+                                    )
+                                })}
+                                {totalAmountFooter('Total Cheques', getTotalAmount(item?.checks, 'checkAmount'))}
+                            </View>
                         </> : <></>
                     }
                     <Text style={styles.xcd}>Total</Text>
-
-                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}>
-                        <Text style={{ fontSize: responsiveFontSize(2.1), color: '#000', fontWeight: '700', width: responsiveWidth(20) }}>Total</Text>
-                        <Image style={styles.imageStyle} source={require('../../assets/rightarrow.png')} />
-                        <Text style={{ fontSize: responsiveFontSize(2.1), color: '#000', fontWeight: '700', width: responsiveWidth(40),textAlign:'center' }}>{currencyArray[1]+total?.toFixed(2)}</Text>
-
+                    <View style={{ marginHorizontal: responsiveWidth(8) }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <Text style={styles.column1}>Total</Text>
+                            <Image style={styles.imageStyle} source={require('../../assets/rightarrow.png')} />
+                            <Text style={styles.column2}>{currencyArray[1]} {total ? total?.toFixed(2) : 0}</Text>
+                        </View>
                     </View>
                 </View>
 
@@ -179,36 +305,38 @@ const styles = StyleSheet.create({
 
     },
     monthDeposit: {
-        flexDirection: 'row',
-        marginTop: responsiveHeight(4),
+        // flexDirection: 'row',
+        // marginTop: responsiveHeight(4),
         justifyContent: 'space-between',
-        // alignItems: 'center',
+        alignItems: 'center',
 
     },
     monthDepositMoney: {
-        color: '#8fd150',
-        fontWeight: "700",
-        fontSize: responsiveFontSize(4),
-        marginLeft: 5,
-        width: responsiveWidth(50),
+        color: '#000', //8fd150
+        fontWeight: "bold",
+        fontSize: 35,
+        // marginLeft: 5,
+        // width: responsiveWidth(50),
 
     },
     monthDepositDescription: {
-        width: '45%',
+        // width: '45%',
+        color: '#000',
+        fontSize: responsiveFontSize(1.9)
     },
 
     breakDown: {
         color: '#000',
         fontSize: responsiveFontSize(2.2),
         fontWeight: '700',
-        paddingHorizontal: responsiveWidth(4)
+        paddingHorizontal: responsiveWidth(8)
     },
     xcd: {
         marginVertical: responsiveHeight(3),
         fontSize: responsiveFontSize(2.6),
-        color: '#14cdd4',
+        color: '#686868', //14cdd4
         fontWeight: '700',
-        marginLeft: responsiveScreenWidth(4)
+        marginLeft: responsiveScreenWidth(8)
     },
     submitButton: {
         alignSelf: 'center',
@@ -224,6 +352,52 @@ const styles = StyleSheet.create({
         height: responsiveScreenHeight(8),
         resizeMode: 'contain',
 
+    },
+    column1: {
+        fontSize: responsiveFontSize(2.1),
+        color: '#000',
+        fontWeight: '700',
+        width: responsiveWidth(20)
+    },
+    column2: {
+        fontSize: responsiveFontSize(2.1),
+        color: '#000',
+        fontWeight: '700',
+        width: responsiveWidth(40),
+        textAlign: 'center'
+    },
+    column3: {
+        fontSize: responsiveFontSize(2.1),
+        color: '#000',
+        fontWeight: '700',
+        textAlign: 'center'
+    },
+    currencyLabel: {
+        fontSize: responsiveFontSize(2.2),
+        color: '#686868',
+    },
+    currencyAmount: {
+        fontSize: responsiveFontSize(2.5),
+        color: '#000',
+        fontWeight: 'bold',
+        marginTop: 5,
+    },
+    discrepancy: {
+        marginHorizontal: responsiveHeight(2),
+    },
+    subHeading: {
+        color: 'black',
+        fontWeight: 'bold',
+        fontSize: responsiveFontSize(2)
+    },
+    normalTxt: {
+        color: 'black',
+        fontSize: responsiveFontSize(2)
+    },
+    discrepancyContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: responsiveHeight(0.8)
     },
 })
 

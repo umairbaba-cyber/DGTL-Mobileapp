@@ -7,7 +7,7 @@ export default function CustomHeader({ navigation, name }) {
 
         <View style={styles.bioContainer}>
             <TouchableOpacity onPress={() => navigation.goBack(null)}>
-                <Image style={styles.Notification} source={require('../assets/backarrow.png')} />
+                <Image style={styles.Notification} source={require('../assets/left.png')} />
             </TouchableOpacity>
             <Text style={styles.nameText}>{name}</Text>
             <TouchableOpacity onPress={() => navigation.navigate('Notifications')}>
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     bioContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
 
     },
     Notification: {

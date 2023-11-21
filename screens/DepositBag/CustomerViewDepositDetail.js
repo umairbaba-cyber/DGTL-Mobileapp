@@ -1,4 +1,4 @@
-import React, {Component, useState, useEffect} from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Image,
+  StatusBar,
 } from 'react-native';
 import CustomHeader from '../../components/CustomHeader';
 import {
@@ -15,19 +16,19 @@ import {
   responsiveWidth,
   responsiveScreenHeight,
 } from 'react-native-responsive-dimensions';
-import {ScrollView} from 'react-native-gesture-handler';
-import {useSelector} from 'react-redux';
+import { ScrollView } from 'react-native-gesture-handler';
+import { useSelector } from 'react-redux';
 import BasePath from '../../config/BasePath';
 
 //it is fifth scrren
 //it is a screen for teller
 // Right now this screen is optional
-export default function CustomerViewDepositDetail({navigation, route}) {
+export default function CustomerViewDepositDetail({ navigation, route }) {
 
-    const CurrencySymbole = useSelector(
-        state => state?.Main?.User?.data?.company.localCurrency,
-      );
-      const currencyArray = CurrencySymbole.split('-');
+  const CurrencySymbole = useSelector(
+    state => state?.Main?.User?.data?.company.localCurrency,
+  );
+  const currencyArray = CurrencySymbole.split('-');
 
   const accountType = useSelector(
     state => state.Main.User.data.userData.accountType,
@@ -35,20 +36,25 @@ export default function CustomerViewDepositDetail({navigation, route}) {
   const accountNumber = useSelector(
     state => state?.Main?.User?.data?.userData?.accountNumber,
   );
+  const dataArry = useSelector(
+    state => state?.Main?.User?.data
+  );
+
+  console.log('dataArry: ', dataArry);
   const DepositDetail =
     route?.params?.detail == 'Monthly'
       ? useSelector(
-          state =>
-            state?.Main?.UserDepositRecord?.depositsThisMonth[
-              route?.params?.selectedItem
-            ],
-        )
+        state =>
+          state?.Main?.UserDepositRecord?.depositsThisMonth[
+          route?.params?.selectedItem
+          ],
+      )
       : useSelector(
-          state =>
-            state?.Main?.UserDepositRecord?.depositsAllTime[
-              route?.params?.selectedItem
-            ],
-        );
+        state =>
+          state?.Main?.UserDepositRecord?.depositsAllTime[
+          route?.params?.selectedItem
+          ],
+      );
   console.log('DepositDetail', DepositDetail.checks);
   const [loading, setLoading] = useState(true);
   //a dummy variable
@@ -74,6 +80,52 @@ export default function CustomerViewDepositDetail({navigation, route}) {
     }, 1500);
     return () => clearInterval(stateInterval);
   }, []);
+
+  const getCoins = (name, value) => {
+    let n = 0;
+    if (name === "X100") {
+      n = 'x' + value / 100;
+    } else if (name === 'X50') {
+      n = 'x' + value / 50
+    } else if (name === 'X20') {
+      n = 'x' + value / 20
+    } else if (name === 'X10') {
+      n = 'x' + value / 10
+    } else if (name === 'X5') {
+      n = 'x' + value / 5
+    } else if (name === 'Coins CA$1') {
+      n = currencyArray[1] + ' ' + value
+    } else if (name === 'Coins') {
+      n = currencyArray[1] + ' ' + value
+    } else {
+      n = currencyArray[1] + ' ' + value
+    }
+    return n;
+  }
+
+  const XCD_Without_Zeroes = DepositDetail.Xcd.filter((e) => e.value !== 0);
+  console.log('XCD_With_Zeroes', DepositDetail);
+  console.log('XCD_Without_Zeroes', XCD_Without_Zeroes);
+
+  const totalAmountFooter = (title, amount) => {
+    return (
+      <View>
+        <View style={{ backgroundColor: '#D3D3D3', height: 1, marginTop: 18, marginBottom: 10 }}></View>
+        <Text style={styles.currencyLabel}>{title}</Text>
+        <Text style={styles.currencyAmount}>{amount}</Text>
+        <View style={{ backgroundColor: '#D3D3D3', height: 1, marginTop: 10, marginBottom: 18 }}></View>
+      </View>
+    )
+  }
+
+  const getTotalAmount = (data, key) => {
+    let total = 0;
+    for (const item of data) {
+      total += item[key]
+    }
+    return currencyArray[1] + ' ' + total;
+  };
+
   if (loading) {
     return (
       <View
@@ -85,7 +137,7 @@ export default function CustomerViewDepositDetail({navigation, route}) {
         }}>
         <Image
           source={require('../../assets/dgtl_icon_610.png')}
-          style={{height: 70, width: 70, borderRadius: 50}}
+          style={{ height: 70, width: 70, borderRadius: 50 }}
           resizeMode="contain"
         />
         <Text
@@ -101,33 +153,71 @@ export default function CustomerViewDepositDetail({navigation, route}) {
   } else {
     //  console.log('HI',DepositDetail)
     return (
-      <ScrollView style={{flex: 1, backgroundColor: '#fff'}}>
-        <View style={styles.topDistance} />
-        <View style={{marginHorizontal: responsiveWidth(4)}}>
+      <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
+        <StatusBar backgroundColor={'#EBF3EF'} barStyle={'dark-content'} />
+        <View style={{ backgroundColor: '#EBF3EF', paddingHorizontal: responsiveScreenWidth(4), paddingBottom: 30, }}>
           <CustomHeader name={'Deposit Detail'} navigation={navigation} />
+          <View style={styles.monthDeposit}>
+            <Text style={styles.monthDepositMoney}>
+              {currencyArray[1] + ' ' + DepositDetail?.total.value.toFixed(2)}
+            </Text>
+            <View style={{ marginTop: 10, alignItems: 'center' }}>
+              <Text
+                style={[styles.monthDepositDescription, { fontWeight: 'bold' }]}>
+                {customerName}
+              </Text>
+              <Text style={styles.monthDepositDescription}>
+                Account Number: {accountNumber}
+              </Text>
+              <Text
+                style={[styles.monthDepositDescription, { fontWeight: 'bold' }]}>
+                {new Date(DepositDetail.createdAt).toDateString()}
+              </Text>
+            </View>
+          </View>
         </View>
 
-        <View style={styles.monthDeposit}>
-          <View style={{width: '45%'}}>
-            <Text style={styles.monthDepositMoney}>
-              {currencyArray[1]+' '+DepositDetail?.total.value.toFixed(2)}
-            </Text>
+        <View style={{ flex: 1 }}>
+          <View style={styles.discrepancy}>
+            <View style={styles.discrepancyContainer}>
+              <View style={{ flexDirection: 'row' }}>
+                <Text style={styles.subHeading}>{'ID: '}</Text>
+                <Text style={styles.normalTxt}>{
+                  abbrevation.concat(
+                    DepositDetail?.bagID?.slice(
+                      DepositDetail?.bagID?.length - 10 + abbrevation.length,
+                      DepositDetail?.bagID?.length,
+                    ),
+                  )}</Text>
+              </View>
+              <View style={{ flexDirection: 'row', }}>
+                <Text style={styles.subHeading}>{'Discrepancies: '}</Text>
+                <Text style={styles.normalTxt}>{DepositDetail?.discrepancies ? `${DepositDetail?.discrepancies}` : "No"}</Text>
+              </View>
+            </View>
+            {DepositDetail?.discrepancies &&
+              <>
+                <View style={styles.discrepancyContainer}>
+                  <View style={{ flexDirection: 'row' }}>
+                    <Text style={styles.subHeading}>{'Type: '}</Text>
+                    <Text style={styles.normalTxt}>{`${DepositDetail?.discrepanciesType}`}</Text>
+                  </View>
+                  <View style={{ flexDirection: 'row' }}>
+                    <Text style={styles.subHeading}>{'Amount: '}</Text>
+                    <Text style={styles.normalTxt}>{`${DepositDetail?.discrepanciesAmount}`}</Text>
+                  </View>
+                </View>
+                <Text style={[styles.subHeading, { marginTop: responsiveHeight(0.8) }]}>{'Notes:'}</Text>
+                <Text style={[styles.normalTxt, { marginTop: responsiveHeight(0.8) }]}>
+                  {`${DepositDetail?.discrepanciesNote}`}
+                </Text>
+              </>
+            }
+            <View style={{ flexDirection: 'row', marginTop: responsiveHeight(0.8) }}>
+              <Text style={styles.subHeading}>{'Status: '}</Text>
+              <Text style={styles.normalTxt}>{DepositDetail?.status ? `${DepositDetail?.status}` : 'pending'}</Text>
+            </View>
           </View>
-          <View style={{width: '45%'}}>
-            <Text
-              style={[styles.monthDepositDescription, {fontWeight: 'bold'}]}>
-              {customerName}
-            </Text>
-            <Text style={styles.monthDepositDescription}>
-              Acct# {accountNumber}
-            </Text>
-            <Text
-              style={[styles.monthDepositDescription, {fontWeight: 'bold'}]}>
-              {new Date(DepositDetail.createdAt).toDateString()}
-            </Text>
-          </View>
-        </View>
-        <View style={{flex: 1}}>
           <View
             style={{
               flexDirection: 'row',
@@ -149,43 +239,24 @@ export default function CustomerViewDepositDetail({navigation, route}) {
                   <Text style={styles.xcd}>{currencyArray[0]}</Text>
                 </View>
               </View>
-              <View style={{marginHorizontal: responsiveWidth(7)}}>
-                {DepositDetail.Xcd.map((item, index) => {
+              <View style={{ marginHorizontal: responsiveWidth(7) }}>
+                {XCD_Without_Zeroes.map((item, index) => {
                   return (
                     <View
-                      key={index}
+                      key={'lcl' + index}
                       style={{
                         flexDirection: 'row',
                         alignItems: 'center',
                         justifyContent: 'space-between',
                         marginHorizontal: responsiveWidth(1.5),
                       }}>
-                      <Text
-                        style={{
-                          fontSize: responsiveFontSize(2.1),
-                          color: '#000',
-                          fontWeight: '700',
-                          width: responsiveWidth(20),
-                        }}>
-                        {item.name}
-                      </Text>
-                      <Image
-                        style={styles.imageStyle}
-                        source={require('../../assets/rightarrow.png')}
-                      />
-                      <Text
-                        style={{
-                          fontSize: responsiveFontSize(2.1),
-                          color: '#000',
-                          fontWeight: '700',
-                          width: responsiveWidth(40),
-                          textAlign: 'center',
-                        }}>
-                        {currencyArray[1]+item.value}
-                      </Text>
+                      <Text style={styles.column1}>{item.name}</Text>
+                      <Image style={styles.imageStyle} source={require('../../assets/rightarrow.png')} />
+                      <Text style={styles.column2}>{getCoins(item.name, item.value)}</Text>
                     </View>
                   );
                 })}
+                {totalAmountFooter('Total Local Currency', getTotalAmount(XCD_Without_Zeroes, 'value'))}
               </View>
             </>
           ) : (
@@ -195,43 +266,24 @@ export default function CustomerViewDepositDetail({navigation, route}) {
             <>
               <Text style={styles.xcd}>FX</Text>
 
-              <View style={{marginHorizontal: responsiveWidth(7)}}>
+              <View style={{ marginHorizontal: responsiveWidth(7) }}>
                 {DepositDetail.FX.map((item, index) => {
                   return (
                     <View
-                      key={index}
+                      key={'fx' + index}
                       style={{
                         flexDirection: 'row',
                         alignItems: 'center',
                         justifyContent: 'space-between',
                         marginHorizontal: responsiveWidth(1.5),
                       }}>
-                      <Text
-                        style={{
-                          fontSize: responsiveFontSize(2.1),
-                          color: '#000',
-                          fontWeight: '700',
-                          width: responsiveWidth(20),
-                        }}>
-                        {item.name}
-                      </Text>
-                      <Image
-                        style={styles.imageStyle}
-                        source={require('../../assets/rightarrow.png')}
-                      />
-                      <Text
-                        style={{
-                          fontSize: responsiveFontSize(2.1),
-                          color: '#000',
-                          fontWeight: '700',
-                          width: responsiveWidth(40),
-                          textAlign: 'center',
-                        }}>
-                        {currencyArray[1]+item?.EQV}
-                      </Text>
+                      <Text style={styles.column1}>{item.name}</Text>
+                      <Image style={styles.imageStyle} source={require('../../assets/rightarrow.png')} />
+                      <Text style={styles.column2}>{currencyArray[1] + ' ' + item?.EQV}</Text>
                     </View>
                   );
                 })}
+                {totalAmountFooter('Total Foreign Exchange', getTotalAmount(DepositDetail.FX, 'EQV'))}
               </View>
             </>
           ) : (
@@ -241,51 +293,30 @@ export default function CustomerViewDepositDetail({navigation, route}) {
           {DepositDetail.checks.length > 0 ? (
             <>
               <Text style={styles.xcd}>CHEQUES</Text>
-              {DepositDetail.checks.map((item, index) => {
-                return (
-                  <View
-                    style={{
-                      marginLeft: responsiveWidth(8),
-                      marginRight: responsiveWidth(22),
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                    }}>
-                    <Text
+              <View style={{ marginHorizontal: responsiveWidth(7) }}>
+                {DepositDetail.checks.map((item, index) => {
+                  return (
+                    <View
+                      key={'cks' + index}
                       style={{
-                        fontSize: responsiveFontSize(2.1),
-                        color: '#000',
-                        fontWeight: '700',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        marginHorizontal: responsiveWidth(1.5),
                       }}>
-                      {item.checkNumber.length >= 4
-                        ? `${item.checkNumber.slice(0, 5)} ...`
-                        : item.checkNumber}
-                    </Text>
-                    <Image
-                      style={styles.imageStyle}
-                      source={require('../../assets/rightarrow.png')}
-                    />
-                    <Text
-                      style={{
-                        fontSize: responsiveFontSize(2.1),
-                        color: '#000',
-                        fontWeight: '700',
-                        textAlign: 'center',
-                      }}>
-                      {item?.bank_UC}
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: responsiveFontSize(2.1),
-                        color: '#000',
-                        fontWeight: '700',
-                        textAlign: 'center',
-                      }}>
-                      { currencyArray[1]+item.checkAmount}
-                    </Text>
-                  </View>
-                );
-              })}
+                      <Text style={styles.column1}>
+                        {item.checkNumber.length >= 4
+                          ? `${item.checkNumber.slice(0, 5)} ...`
+                          : item.checkNumber}
+                      </Text>
+                      <Image style={styles.imageStyle} source={require('../../assets/rightarrow.png')} />
+                      <Text style={styles.column3}>{item?.bank_UC}</Text>
+                      <Text style={styles.column3}>{currencyArray[1] + ' ' + item.checkAmount}</Text>
+                    </View>
+                  );
+                })}
+                {totalAmountFooter('Total Cheques', getTotalAmount(DepositDetail.checks, 'checkAmount'))}
+              </View>
             </>
           ) : (
             <></>
@@ -296,31 +327,13 @@ export default function CustomerViewDepositDetail({navigation, route}) {
             style={{
               flexDirection: 'row',
               alignItems: 'center',
-              justifyContent: 'space-around',
+              justifyContent: 'space-between',
+              marginLeft: responsiveWidth(8),
+              marginRight: responsiveWidth(22),
             }}>
-            <Text
-              style={{
-                fontSize: responsiveFontSize(2.1),
-                color: '#000',
-                fontWeight: '700',
-                width: responsiveWidth(20),
-              }}>
-              Total
-            </Text>
-            <Image
-              style={styles.imageStyle}
-              source={require('../../assets/rightarrow.png')}
-            />
-            <Text
-              style={{
-                fontSize: responsiveFontSize(2.1),
-                color: '#000',
-                fontWeight: '700',
-                width: responsiveWidth(40),
-                textAlign: 'center',
-              }}>
-              {currencyArray[1]+DepositDetail.total.value.toFixed(2)}
-            </Text>
+            <Text style={styles.column1}>Total</Text>
+            <Image style={styles.imageStyle} source={require('../../assets/rightarrow.png')} />
+            <Text style={styles.column2}>{currencyArray[1] + ' ' + DepositDetail.total.value.toFixed(2)}</Text>
           </View>
         </View>
       </ScrollView>
@@ -337,19 +350,19 @@ const styles = StyleSheet.create({
     marginTop: responsiveHeight(4),
   },
   monthDeposit: {
-    flexDirection: 'row',
-    marginTop: responsiveHeight(4),
+    // flexDirection: 'row',
+    // marginTop: responsiveHeight(4),
     justifyContent: 'space-evenly',
     alignItems: 'center',
   },
   monthDepositMoney: {
-    color: '#8fd150',
-    fontSize: responsiveFontSize(4.1),
-    fontWeight: 'bold',
+    color: '#000', //8fd150
+    fontSize: 35,
+    fontWeight: 'bold'
   },
   monthDepositDescription: {
     color: '#000',
-    fontSize: responsiveFontSize(1.9),
+    fontSize: 15,
   },
   breakDown: {
     color: '#000',
@@ -360,9 +373,9 @@ const styles = StyleSheet.create({
   xcd: {
     marginVertical: responsiveHeight(3),
     fontSize: responsiveFontSize(2.6),
-    color: '#14cdd4',
+    color: '#686868', //14cdd4
     fontWeight: '700',
-    marginLeft: responsiveScreenWidth(4),
+    marginLeft: responsiveScreenWidth(8),
   },
   submitButton: {
     alignSelf: 'center',
@@ -377,6 +390,52 @@ const styles = StyleSheet.create({
     width: responsiveScreenWidth(8),
     height: responsiveScreenHeight(8),
     resizeMode: 'contain',
+  },
+  column1: {
+    fontSize: responsiveFontSize(2.1),
+    color: '#000',
+    fontWeight: '700',
+    width: responsiveWidth(20)
+  },
+  column2: {
+    fontSize: responsiveFontSize(2.1),
+    color: '#000',
+    fontWeight: '700',
+    width: responsiveWidth(40),
+    textAlign: 'center'
+  },
+  column3: {
+    fontSize: responsiveFontSize(2.1),
+    color: '#000',
+    fontWeight: '700',
+    textAlign: 'center'
+  },
+  currencyLabel: {
+    fontSize: responsiveFontSize(2.2),
+    color: '#686868',
+  },
+  currencyAmount: {
+    fontSize: responsiveFontSize(2.5),
+    color: '#000',
+    fontWeight: 'bold',
+    marginTop: 5,
+  },
+  discrepancy: {
+    marginHorizontal: responsiveHeight(2),
+  },
+  subHeading: {
+    color: 'black',
+    fontWeight: 'bold',
+    fontSize: responsiveFontSize(2)
+  },
+  normalTxt: {
+    color: 'black',
+    fontSize: responsiveFontSize(2)
+  },
+  discrepancyContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: responsiveHeight(0.8)
   },
 });
 

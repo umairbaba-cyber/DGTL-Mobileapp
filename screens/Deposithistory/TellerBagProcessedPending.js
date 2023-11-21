@@ -9,6 +9,16 @@ export default function DepositHistory({ navigation, route }) {
     const DepositHistory = useSelector(state => state.Main.UserDepositRecord.depositsAllTimePending);
 
 
+    const getIndex = (id) => {
+        const index = DepositHistory.findIndex((e) => e._id === id);
+        if (index !== -1) {
+            return index;
+        } else {
+            console.log(`Object with id ${id} not found in your data`);
+            return 0;
+        }
+    }
+
     function FilterList() {
         let isEmpty = DepositHistory.find(item => {
             if (item.ScannedByTeller == false) {
@@ -17,7 +27,7 @@ export default function DepositHistory({ navigation, route }) {
         });
 
 
-        if (DepositHistory.length < 1) {
+        if (DepositHistory?.length < 1) {
             return (
                 <View style={{ height: responsiveHeight(30), justifyContent: 'center', alignItems: 'center' }}>
                     <Text style={{ color: '#000' }}>No Pending Deposit </Text>
@@ -32,9 +42,11 @@ export default function DepositHistory({ navigation, route }) {
                 )
             } else {
                 return (
-                    <View style={{ width: '100%', height: '92%' }}>
+                    <View style={{ width: '100%', height: '92%', marginTop: 20, flex: 1,}}>
                         <FlatList
                             data={DepositHistory}
+                            style={{flex: 1}}
+                            showsVerticalScrollIndicator={false}
                             renderItem={({ item, index }) => (
                                 <PendingPayment index={index} item={item} navigation={navigation} />
                             )}
@@ -49,19 +61,14 @@ export default function DepositHistory({ navigation, route }) {
 
     return (
         <View style={styles.container}>
-            <View style={styles.innerContainer}>
-                <View style={{ marginHorizontal: responsiveScreenWidth(4) }}>
+                <View style={{ marginHorizontal: responsiveScreenWidth(4), flex: 1 }}>
                     <CustomHeader name={'Pending Deposit'} navigation={navigation} />
                     {/* <View style={{ marginVertical: 30 }} /> */}
-                    <View style={{ paddingHorizontal: 10 }}>
+                    <View style={{ paddingHorizontal: 10, flex: 1 }}>
                         {FilterList()}
 
                     </View>
-
-
                 </View>
-            </View>
-
         </View>
     );
 
