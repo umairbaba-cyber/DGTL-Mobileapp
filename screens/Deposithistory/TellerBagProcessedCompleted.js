@@ -1,42 +1,58 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import { responsiveFontSize, responsiveHeight, responsiveScreenWidth } from 'react-native-responsive-dimensions';
 import CustomHeader from '../../components/CustomHeader'
 import CompletedPayment from './components/CompletedPayment';
 import { useSelector } from 'react-redux';
 import DepositApprovedByTeller from '../../components/DepositApprovedTeller';
+import { useIsFocused } from '@react-navigation/native';
 export default function DepositHistory({ navigation, route }) {
     const DepositHistory = useSelector(state => state.Main.UserDepositRecord.depositsAllTimeApproved);
 
+    console.log('DepositHistory ---', DepositHistory);
+    const [data, setData] = useState([]);
+    const isFocused = useIsFocused();
+    useEffect(() => {
+        const arr = DepositHistory.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        setData(arr)
+    }, [isFocused]);
 
+    const getIndex = (id) => {
+        const index = data.findIndex((e) => e._id === id);
+        if (index !== -1) {
+            return index;
+        } else {
+            console.log(`Object with id ${id} not found in your data`);
+            return 0;
+        }
+    }
 
     return (
         <View style={styles.container}>
-            <View style={styles.innerContainer}>
-                <View style={{ marginHorizontal: responsiveScreenWidth(4) }}>
-                    <CustomHeader name={'Completed Deposit'} navigation={navigation} />
+            <View style={{ marginHorizontal: responsiveScreenWidth(4), flex: 1 }}>
+                <CustomHeader name={'Completed Deposit'} navigation={navigation} />
 
 
-                    {/* <View style={{ marginVertical: 30 }} /> */}
-                    <View style={{ paddingHorizontal: 10 }}>
-                        {DepositHistory.length < 1 ?
+                {/* <View style={{ marginVertical: 30 }} /> */}
+                <View style={{ paddingHorizontal: 10, flex: 1, marginTop: 20 }}>
+                    {data?.length < 1 ?
 
-                            <View style={{ height: responsiveHeight(30), justifyContent: 'center', alignItems: 'center' }}>
-                                <Text style={{color:'#000'}}>No Completed Deposit</Text>
-                            </View> :
-                            <FlatList
-                                data={DepositHistory}
-                                renderItem={({ item, index }) => (
-                                    <CompletedPayment index={index} item={item} navigation={navigation} />
-                                )}
-                            />
+                        <View style={{ height: responsiveHeight(30), justifyContent: 'center', alignItems: 'center' }}>
+                            <Text style={{ color: '#000' }}>No Completed Deposit</Text>
+                        </View> :
+                        <FlatList
+                            data={data}
+                            showsVerticalScrollIndicator={false}
+                            style={{ flex: 1 }}
+                            renderItem={({ item, index }) => (
+                                <CompletedPayment index={getIndex(item._id)} item={item} navigation={navigation} />
+                            )}
+                        />
 
-                        }
-                    </View>
-
+                    }
                 </View>
-            </View>
 
+            </View>
         </View>
     );
 

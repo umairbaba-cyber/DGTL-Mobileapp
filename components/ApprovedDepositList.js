@@ -8,6 +8,7 @@ export default function ApprovedDeposit({ navigation, item, index }) {
 
         <FlatList
             data={item}
+            showsVerticalScrollIndicator={false}
             renderItem={({ item, index }) => (
                 <TouchableOpacity
                     keyExtractor={(item,) => String(item)}

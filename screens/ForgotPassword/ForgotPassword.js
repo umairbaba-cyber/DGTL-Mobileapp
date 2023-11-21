@@ -87,7 +87,8 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         paddingHorizontal: 10,
         height:45,
-        marginBottom: responsiveHeight(3)
+        marginBottom: responsiveHeight(3),
+        color: '#000',
     },
 
 

@@ -39,6 +39,8 @@ import messaging from '@react-native-firebase/messaging';
 import CompleteDepositCustomer from './screens/DepositBag/CompleteDepositCustomer';
 import { responsiveHeight } from 'react-native-responsive-dimensions';
 import ChangePassword from './screens/ChangePassword';
+import OTPScreen from './screens/OTPScreen/OTPScreen';
+import SetPinScreen from './screens/SetPinScreen/SetPinScreen';
 
 LogBox.ignoreAllLogs(false)
 
@@ -65,10 +67,25 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator screenOptions={({ navigation, route }) =>
         ({
-          headerShown: route?.name == "Login" || route?.name == "ForgotPassword" || route?.name== "QrCode" || route?.name == "Session" ? false : true,
+          headerShown: route?.name == "Login" 
+          || route?.name == "ForgotPassword" 
+          || route?.name == "OTPScreen" 
+          || route?.name== "QrCode" 
+          || route?.name== "SetPinScreen" 
+          || route?.name == "Session" ? false : true,
           headerStyle: {
             borderBottomWidth: 2,
             borderBottomColor:'#18193F',
+            backgroundColor: route?.name == "DepositHistory" 
+            || route.name == "CustomerViewDepositDetail" 
+            || route?.name == "DepositHistoryMonthly"  
+            || route?.name == "DepositHistoryTeller" 
+            || route?.name == "TellerViewDepositDetailThisMonth" 
+            || route?.name == "NotifiDetail"
+            || route?.name == "VarifyDeposit"
+            || route?.name == "TellerVerifyDeposit" 
+            || route?.name == "TellerViewDepositDetail" ? '#EBF3EF' 
+            : '#fff',
             height:Platform.OS=='ios'? responsiveHeight(14):responsiveHeight(10)
           },
           headerLeft: () => <HeaderLeft />,
@@ -81,6 +98,8 @@ export default function App() {
           <Stack.Screen name="Home" component={Root} />
           <Stack.Screen name="Notifications" component={Notifications} />
           <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+          <Stack.Screen name="OTPScreen" component={OTPScreen} />
+          <Stack.Screen name="SetPinScreen" component={SetPinScreen} />
           <Stack.Screen name="Deposit" component={Deposit} />
           <Stack.Screen name="DepositForexCurrency" component={DepositForexCurrency} />
           <Stack.Screen name="DepositChecks" component={DepositChecks} />

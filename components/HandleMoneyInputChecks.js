@@ -10,7 +10,7 @@ export default function HandleMoneyInput({ handleCheckNo,handleAmount,handleBank
             <TextInput onChangeText={(e)=>handleCheckNo(e)} style={styles.inputStyle} />
             <Image style={styles.imageStyle} source={require('../assets/rightarrow.png')} />
             <TextInput keyboardType='default' onChangeText={(e)=>handleBank(e)} style={{...styles.inputStyle,width:80}} />
-            <TextInput keyboardType='number-pad' onChangeText={(e)=>handleAmount(e)} style={{...styles.inputStyle,width:80}} />
+            <TextInput keyboardType='decimal-pad' onChangeText={(e)=>handleAmount(e)} style={{...styles.inputStyle,width:80}} />
 
         </View>
     );
@@ -20,7 +20,7 @@ export default function HandleMoneyInput({ handleCheckNo,handleAmount,handleBank
 const styles=StyleSheet.create({
     Container:{
         flexDirection: 'row',
-        marginVertical:responsiveHeight( 2),
+        // marginVertical:responsiveHeight( 2),
          justifyContent: 'space-around',
          alignItems:'center'
     },
@@ -33,9 +33,10 @@ const styles=StyleSheet.create({
     },
 
     imageStyle: {
-        height: responsiveHeight(8),
-        width: responsiveScreenWidth(8),
-        resizeMode: 'contain'
+        height: 28,
+        width: 28,
+        marginLeft: responsiveScreenWidth(1),
+        // resizeMode: 'contain'
 
     },
 })

@@ -1,5 +1,5 @@
 import React, { Component, useEffect, useState } from 'react';
-import { StyleSheet, View, Text, FlatList, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, View, Text, FlatList, TouchableOpacity, Image, StatusBar, ActivityIndicator } from 'react-native';
 import { responsiveFontSize, responsiveHeight, responsiveScreenWidth, responsiveWidth } from 'react-native-responsive-dimensions';
 import CustomHeader from '../../components/CustomHeader';
 import NotificationDetail from '../../components/NotificationDetail';
@@ -43,21 +43,26 @@ export default function Notifications({ navigation }) {
             }
         ).catch(e => console.log(e));
     }
+
+    console.log('notifications ---',JSON.stringify(notifications));
     return (
         <View style={styles.container}>
-            <CustomHeader name={'Notifications'} navigation={navigation}/>
+            <StatusBar backgroundColor={'#fff'} barStyle={'dark-content'}/>
             <View style={{ marginHorizontal: responsiveScreenWidth(4) }}>
+            <CustomHeader name={'Notifications'} navigation={navigation}/>
                
             </View>
 
-            {notifications.length < 1 ?
+            {notifications?.length < 1 ?
                 <View style={styles.noNotificationContainer}>
                     <Text style={{color:'#000'}}>No Notification </Text>
+                    <ActivityIndicator color={'#000'}/>
                 </View> :
 
                 <FlatList
                     data={notifications.reverse()}
-                  
+                    showsVerticalScrollIndicator={false}
+                    style={{flex: 1, marginTop: 20}}
                     renderItem={({ item, index, separators }) => (
                         <NotificationDetail item={item} navigation={navigation} index={index}/>
 
@@ -72,7 +77,7 @@ export default function Notifications({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff'
+        backgroundColor: '#fff',
     },
     noNotificationContainer: {
         flex: 1,
@@ -83,7 +88,7 @@ const styles = StyleSheet.create({
         width: responsiveScreenWidth(6),
         height: responsiveHeight(6),
         resizeMode: 'contain',
-        margin: responsiveWidth(4)
+        // margin: responsiveWidth(4)
     },
     notificationTitle: {
         margin: 5,
