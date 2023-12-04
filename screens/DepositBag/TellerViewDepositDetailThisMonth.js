@@ -20,12 +20,14 @@ export default function CustomerViewDepositDetail({ navigation, route }) {
     const DepositDetail = useSelector(state => route.params.status == 'pending' ? state.Main.UserDepositRecord.depositsThisMonthPending[route.params.selectedItem] : state.Main.UserDepositRecord.depositsThisMonthApproved[route.params.selectedItem]);
     const ScannedByTeller = useSelector(state => route.params.status == 'pending' ? state?.Main?.UserDepositRecord?.depositsThisMonthPending[route.params.selectedItem]?.ScannedByTeller : state?.Main?.UserDepositRecord?.depositsThisMonthApproved[route.params.selectedItem]?.ScannedByTeller);
     const ScannedBySupervisor = useSelector(state => route.params.status == 'pending' ? state?.Main?.UserDepositRecord?.depositsThisMonthPending[route.params.selectedItem]?.ScannedBySupervisor : state?.Main?.UserDepositRecord?.depositsThisMonthApproved[route.params.selectedItem]?.ScannedBySupervisor);
+    const ScannedBySecondSupervisor = useSelector(state => route.params.status == 'pending' ? state?.Main?.UserDepositRecord?.depositsThisMonthPending[route.params.selectedItem]?.ScannedBySecondSupervisor : state?.Main?.UserDepositRecord?.depositsThisMonthApproved[route.params.selectedItem]?.ScannedBySecondSupervisor);
     const BigID = useSelector(state => state.Main.UserDepositRecord.depositsThisMonthPending[route.params.selectedItem]?.bagID);
     const [loading, setLoading] = useState(true)
     const customerNameqc = useSelector(state => state?.Main?.QrCodeScanedDetail?.customer?.name);
     // console.log('user data abb',abbrevation)
     const data = route?.params
     const customerName = data?.item?.customer_details[0]?.name
+    const userId = useSelector(state => state?.Main?.User?.data?.userData?._id);
     console.log(customerName, customerNameqc)
     useEffect(() => {
         setDiscrepancies(DepositDetail?.discrepancies)
@@ -38,6 +40,9 @@ export default function CustomerViewDepositDetail({ navigation, route }) {
     }, [])
 
     const [discrepancies, setDiscrepancies] = useState('');
+    const FirstSupervisorID = DepositDetail?.FirstSupervisorID
+    const SecondSupervisorID = DepositDetail?.SecondSupervisorID
+    console.log("DepositDetail >>>", FirstSupervisorID, SecondSupervisorID, userId, ScannedBySecondSupervisor);
 
     const getCoins = (name, value) => {
         let n = 0;
@@ -218,7 +223,21 @@ export default function CustomerViewDepositDetail({ navigation, route }) {
                                     >
                                         <Text style={{ color: '#18193F', fontWeight: '700' }}>Verify</Text>
                                     </TouchableOpacity>
-                                ) : null}
+                                ) : accountType === "supervisor" && ScannedBySupervisor && !ScannedBySecondSupervisor && FirstSupervisorID !== userId ? (
+                                    <TouchableOpacity
+                                        onPress={() => navigation.replace('QrCode', { BagID: BigID })}
+                                        style={{
+                                            width: 100,
+                                            height: 45,
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            backgroundColor: '#36C4F1',
+                                            right: responsiveWidth(10),
+                                        }}
+                                    >
+                                        <Text style={{ color: '#18193F', fontWeight: '700' }}>Verify</Text>
+                                    </TouchableOpacity>
+                                ): null}
                                 {/* {accountType === "teller" && ScannedByTeller || ScannedBySupervisor ? <></> :
                                     <TouchableOpacity onPress={() => navigation.replace('QrCode', { BagID: BigID })} style={{ width: 100, height: 45, justifyContent: 'center', alignItems: 'center', backgroundColor: '#36C4F1', right: responsiveWidth(10) }}>
                                         <Text style={{ color: '#18193F', fontWeight: '700' }}>Verify</Text>

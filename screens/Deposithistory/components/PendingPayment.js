@@ -75,7 +75,7 @@ export default function PendingPayment({navigation, item, index }) {
   // console.log('dataaa', data)
 
   console.log('account type', accountType);
-  console.log('Item: =', index);
+  console.log('Item: =', item);
 
   if (accountType === 'Supervisor' && item.ScannedByTeller === true ) {
     return (

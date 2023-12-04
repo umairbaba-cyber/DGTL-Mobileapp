@@ -91,6 +91,7 @@ export default function Login({navigation}) {
   };
 
   console.log('option: ', option, email, password);
+  console.log("BasePath + 'login'", BasePath + 'login');
   //this function will be called if user want to login
   async function Login() {
     console.log('email>>>', email, 'password>>>', password);

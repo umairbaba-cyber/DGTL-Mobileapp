@@ -7,7 +7,9 @@ import { useSelector } from 'react-redux';
 export default function DepositHistory({ navigation, route }) {
 
     const DepositHistory = useSelector(state => state.Main.UserDepositRecord.depositsAllTimePending);
+    const accountType = useSelector( state => state.Main.User.data.userData.accountType);
 
+    console.log("accountType ===>", accountType);
 
     const getIndex = (id) => {
         const index = DepositHistory.findIndex((e) => e._id === id);
@@ -44,7 +46,7 @@ export default function DepositHistory({ navigation, route }) {
                 return (
                     <View style={{ width: '100%', height: '92%', marginTop: 20, flex: 1,}}>
                         <FlatList
-                            data={DepositHistory}
+                            data={accountType === "teller"? DepositHistory.filter(item => !item.ScannedBySupervisor) : DepositHistory}
                             style={{flex: 1}}
                             showsVerticalScrollIndicator={false}
                             renderItem={({ item, index }) => (

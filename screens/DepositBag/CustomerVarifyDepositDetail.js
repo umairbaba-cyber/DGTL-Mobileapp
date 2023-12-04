@@ -56,6 +56,8 @@ export default function VarifyDeposit({ navigation, route }) {
   }
   //this response will be send to api to verify user info
 
+  console.log('bagId ===>', bagID);
+
   async function VerifyRecord() {
     if (total.value == 0) {
       alert('Please Enter Valid Amount');

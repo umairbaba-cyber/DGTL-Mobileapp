@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Image,
@@ -17,8 +17,8 @@ import {
 } from 'react-native-responsive-dimensions';
 import RecentDeposits from '../../components/RecentDeposits';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useDispatch, useSelector } from 'react-redux';
-import { useFocusEffect } from '@react-navigation/native';
+import {useDispatch, useSelector} from 'react-redux';
+import {useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
 import {
   UpdateUserDepositRecord,
@@ -27,13 +27,11 @@ import {
 import messaging from '@react-native-firebase/messaging';
 import BasePath from '../../config/BasePath';
 
-export default function Home({ navigation, route }) {
+export default function Home({navigation, route}) {
   const CurrencySymbole = useSelector(
     state => state?.Main?.User?.data?.company.localCurrency,
   );
-  const userData = useSelector(
-    state => state?.Main?.User?.data
-  );
+  const userData = useSelector(state => state?.Main?.User?.data);
 
   // console.log("userData: ", userData);
   const currencyArray = CurrencySymbole.split('-');
@@ -95,7 +93,6 @@ export default function Home({ navigation, route }) {
     return () => unsubscribe();
   }
 
-
   async function StoreFcmToken(fcmToken) {
     let token = await AsyncStorage.getItem('token');
     axios
@@ -110,7 +107,7 @@ export default function Home({ navigation, route }) {
           },
         },
       )
-      .then(res => { })
+      .then(res => {})
       .catch(e => {
         console.log('error occured', e);
       });
@@ -154,8 +151,8 @@ export default function Home({ navigation, route }) {
       .then(res => {
         // console.log('teller home page data', JSON.stringify(res.data));
 
-        const { code, data } = res.data;
-        console.log("Data ------", data?.depositsAllTimeApproved);
+        const {code, data} = res.data;
+        console.log('Data ------', data);
 
         if (code == 200) {
           setActive(res?.data?.data?.notification_active);
@@ -188,8 +185,8 @@ export default function Home({ navigation, route }) {
         },
       })
       .then(res => {
-        const { code, data } = res.data;
-        console.log('home page api customer data',data)
+        const {code, data} = res.data;
+        console.log('home page api customer data', data);
         if (code == 200) {
           setActive(res?.data?.data?.notification_active);
           if (data.totalDepositThisMonth.length > 0) {
@@ -221,11 +218,13 @@ export default function Home({ navigation, route }) {
   //   });
   //   return tempArray
   // }
+  console.log('customerDeposit -->', customerDeposit);
+
   function sortedData(dataArray) {
     const tempArray = dataArray.sort((a, b) => {
       // Check if either ScannedByTeller or ScannedBySupervisor is false
-      const aCondition = !a.ScannedByTeller || !a.ScannedBySupervisor;
-      const bCondition = !b.ScannedByTeller || !b.ScannedBySupervisor;
+      const aCondition = !a.ScannedBySupervisor || !a.ScannedBySecondSupervisor;
+      const bCondition = !b.ScannedBySupervisor || !b.ScannedBySecondSupervisor;
 
       // If both a and b meet the condition or both don't meet the condition, sort by createdAt
       if ((aCondition && bCondition) || (!aCondition && !bCondition)) {
@@ -240,7 +239,6 @@ export default function Home({ navigation, route }) {
     return tempArray;
   }
 
-
   if (isLoading) {
     return (
       <View
@@ -254,7 +252,7 @@ export default function Home({ navigation, route }) {
 
         <Image
           source={require('../../assets/dgtl_icon_610.png')}
-          style={{ height: 70, width: 70, borderRadius: 50 }}
+          style={{height: 70, width: 70, borderRadius: 50}}
           resizeMode="contain"
         />
         <Text
@@ -272,8 +270,8 @@ export default function Home({ navigation, route }) {
       <View style={styles.loginContainer}>
         <StatusBar backgroundColor={'#fff'} barStyle={'dark-content'} />
         <ScrollView
-          contentContainerStyle={{ paddingHorizontal: responsiveScreenWidth(3) }}
-          style={{ flex: 1 }}>
+          contentContainerStyle={{paddingHorizontal: responsiveScreenWidth(3)}}
+          style={{flex: 1}}>
           {/* it is just margin from top */}
           <View style={styles.topDistance} />
           {/* it is user info section such as name */}
@@ -303,11 +301,11 @@ export default function Home({ navigation, route }) {
                 <Text
                   style={[
                     styles.depositText,
-                    { fontWeight: 600, fontSize: responsiveFontSize(4.0) },
+                    {fontWeight: 600, fontSize: responsiveFontSize(4.0)},
                   ]}>
                   +
                 </Text>
-                <Text style={[styles.depositText, { fontWeight: 'bold' }]}>
+                <Text style={[styles.depositText, {fontWeight: 'bold'}]}>
                   New Deposit
                 </Text>
                 {/* <Text style={styles.depositText}>Bag</Text> */}
@@ -341,11 +339,11 @@ export default function Home({ navigation, route }) {
                 <Text
                   style={[
                     styles.depositText,
-                    { fontWeight: 600, fontSize: responsiveFontSize(4.0) },
+                    {fontWeight: 600, fontSize: responsiveFontSize(4.0)},
                   ]}>
                   +
                 </Text>
-                <Text style={[styles.depositText, { fontWeight: 'bold' }]}>
+                <Text style={[styles.depositText, {fontWeight: 'bold'}]}>
                   Process Bag
                 </Text>
                 {/* <Text style={styles.depositText}>Bag</Text> */}
@@ -379,7 +377,7 @@ export default function Home({ navigation, route }) {
               <Text style={styles.RecentDeposit}>Pending Deposits</Text>
             )}
           </View>
-          <View style={{ marginLeft: 5 }}>
+          <View style={{marginLeft: 5}}>
             <RecentDeposits
               navigation={navigation}
               Deposits={customerDeposit}
@@ -387,7 +385,7 @@ export default function Home({ navigation, route }) {
               role={users.accountType}
             />
           </View>
-          <View style={{ marginTop: responsiveHeight(10) }} />
+          <View style={{marginTop: responsiveHeight(10)}} />
         </ScrollView>
       </View>
     );

@@ -10,8 +10,10 @@ import { useSelector } from 'react-redux';
 export default function VarifyDeposit({ navigation, route, props }) {
   const [isLoading, setLoading] = useState(false);
 
-  const note = route?.params?.discrepancy
-  console.log("Note: ",note)
+  const note = route?.params?.discrepancy;
+  const sbs = route?.params?.data?.qrsingle?.ScannedBySupervisor;
+  const sbss = route?.params?.data?.qrsingle?.ScannedBySecondSupervisor;
+  console.log("Note: ",sbs, sbss)
   const CurrencySymbole = useSelector(
     state => state?.Main?.User?.data?.company.localCurrency,
   );
@@ -29,7 +31,7 @@ export default function VarifyDeposit({ navigation, route, props }) {
   const bagId = route?.params?.data?.qrsingle?.bagID
   const qrsingle = route?.params?.QRSingle
   const accountType = route?.params?.accountType
-  console.log("qrsingle ----", qrsingle);
+  console.log("qrsingle ----", route?.params?.data);
   const customerData = route?.params?.QrCodeScanedDetail?.customer;
   const abbrevation = useSelector(state => state?.Main?.User?.data?.company?.abbrevation);
   // const [depositId,setDepositId]=useState('')
@@ -56,12 +58,12 @@ export default function VarifyDeposit({ navigation, route, props }) {
         <Text style={styles.textSize}>ACCT# {customerData?.accountNumber}</Text>
       </View>
 
-      {(accountType === 'teller' && note == 'Yes') ?
+      {((accountType === 'teller' || sbs) && note == 'Yes') ?
         <>
-          <Text style={{ color: 'black', marginLeft: 20 }}>{'Discrepancies: ' + route?.params?.discrepancy}</Text>
+          <Text style={{ color: 'black', marginLeft: 20, marginTop: 20 }}>{'Discrepancies: ' + route?.params?.discrepancy}</Text>
           <View style={styles.discrepancy}>
             <View style={styles.discrepancyContainer}>
-              <View style={{ flexDirection: 'row' }}>
+              <View style={{ flexDirection: 'row', marginLeft: 5 }}>
                 <Text style={styles.subHeading}>{'Type: '}</Text>
                 <Text style={styles.normalTxt}>{route?.params?.discrepanciesType}</Text>
               </View>
@@ -78,7 +80,7 @@ export default function VarifyDeposit({ navigation, route, props }) {
         </>
         : (note == 'No') && <Text style={{ color: 'black', marginLeft: 20 }}>{""}</Text>
       }
-      {accountType === 'supervisor' &&
+      {accountType === 'supervisor' && sbss &&
         <View style={styles.discrepancy}>
           <View style={styles.discrepancyContainer}>
             <View style={{ flexDirection: 'row' }}>

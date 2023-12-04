@@ -44,6 +44,8 @@ export default function QrCode({navigation, route}) {
       clientID: data[1],
       bagID: data[2],
     };
+
+    console.log("qr_detail: ",qr_detail);
     //if qr bag id match with scanned
     // this route.params?.BagID is coming from TellerBagProcessedPending screen inside Deposithistory folder
     if (route.params?.BagID) {
