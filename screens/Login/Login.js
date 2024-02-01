@@ -33,9 +33,9 @@ import {useIsFocused} from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 export default function Login({navigation}) {
   //for editing user email
-  const [email, setEmail] = useState('1NBSupervisor@iicdev.com');
+  const [email, setEmail] = useState('');
   //for editing password
-  const [password, setPassword] = useState('1NBSupervisor1');
+  const [password, setPassword] = useState('');
   //an indicator to show if state loading  is not completed
   const [isLoading, setIsLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -255,8 +255,9 @@ export default function Login({navigation}) {
             }
           })
           .catch(e => {
-            console.log('Error -->>', e);
-            Toast.show({ type: 'error', text1: `${e}`});
+            const errorMessage = e?.response?.data?.message;
+            console.log('Error -->>', errorMessage);        
+            Toast.show({ type: 'error', text1: `${errorMessage ?? e}`});
           });
       } else {
         alert('Enter Valid Password');

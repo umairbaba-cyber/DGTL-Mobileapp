@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 // import moment from 'moment';
 // import React, { Component } from 'react';
 // import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
@@ -74,8 +75,8 @@ export default function PendingPayment({navigation, item, index }) {
   // console.log('account typee', accountType);
   // console.log('dataaa', data)
 
-  console.log('account type', accountType);
-  console.log('Item: =', item);
+  // console.log('account type', accountType);
+  // console.log('Item: =', item);
 
   if (accountType === 'Supervisor' && item.ScannedByTeller === true ) {
     return (
@@ -132,13 +133,13 @@ export default function PendingPayment({navigation, item, index }) {
       <TouchableOpacity
         keyExtractor={(item, index) => String(index)}
         style={{marginVertical: 2}}
-        onPress={() =>
+        onPress={() =>{
           navigation.navigate('TellerViewDepositDetailThisMonth', {
             selectedItem: index,
             status: 'pending',
             item,
           })
-        }>
+        }}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <Image
             style={styles.imageStyle}

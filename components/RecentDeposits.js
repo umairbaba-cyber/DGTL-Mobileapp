@@ -39,25 +39,29 @@ export default function RecentDeposits({Deposits, data, navigation, role}) {
     if (index !== -1) {
       return index;
     } else {
-      console.log(`Object with id ${id} not found in your data`);
+      // console.log(`Object with id ${id} not found in your data`);
       return 0;
     }
   };
 
   const ssf = data.filter(item => !item.ScannedBySupervisor);
-  console.log(
-    'aaaaaaa',
-    data.filter(item => !item.ScannedBySupervisor),
-    role,
-  );
+  // console.log(
+  //   'aaaaaaa',
+  //   data.filter(item => !item.ScannedBySupervisor),
+  //   role,
+  // );
 
   function FilterList(navigation) {
     let isEmpty = Deposits.find(item => {
       if (item.ScannedByTeller == false) {
         return true;
       }
+      else if (item.ScannedByTeller == true) {
+        return 'false';
+      }
+      
     });
-
+// console.log('isEmpty', isEmpty);
     if (data.length < 1) {
       return (
         <View
@@ -86,7 +90,7 @@ export default function RecentDeposits({Deposits, data, navigation, role}) {
           <>
             {role === 'teller'
               ? data.filter(item => !item.ScannedBySupervisor).map((item, index) => {
-                  // console.log('pending deposits item data', item)
+                  // console.log('start-index', index)
                   if (index < 3)
                     return (
                       <PendingPayment
@@ -144,7 +148,7 @@ export default function RecentDeposits({Deposits, data, navigation, role}) {
                         })
                       }>
                       <View style={styles.recentDepositContainer}>
-                        {item.ScannedByTeller && item.ScannedBySupervisor ? (
+                        {item.ScannedBySupervisor && item.ScannedBySecondSupervisor? (
                           <>
                             <Image
                               style={styles.imageStyle}

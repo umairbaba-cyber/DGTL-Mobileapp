@@ -40,7 +40,7 @@ export default function CustomerViewDepositDetail({ navigation, route }) {
     state => state?.Main?.User?.data
   );
 
-  console.log('dataArry: ', dataArry);
+  // console.log('dataArry: ', dataArry);
   const DepositDetail =
     route?.params?.detail == 'Monthly'
       ? useSelector(
@@ -55,7 +55,8 @@ export default function CustomerViewDepositDetail({ navigation, route }) {
           route?.params?.selectedItem
           ],
       );
-  console.log('DepositDetail', DepositDetail.checks);
+  // console.log('DepositDetail', DepositDetail.checks);
+  // console.log('route?.params?.selectedItem', route?.params?.selectedItem);
   const [loading, setLoading] = useState(true);
   //a dummy variable
   const Depositsdd = useSelector(
@@ -70,13 +71,13 @@ export default function CustomerViewDepositDetail({ navigation, route }) {
   );
 
   const data = route?.params;
-  console.log('Data>>>', customerName);
+  // console.log('Data>>>', customerName);
   // const customerName = data?.item?.customer_details[0]?.name
 
   useEffect(() => {
     const stateInterval = setTimeout(() => {
       setLoading(false);
-      console.log(Depositsdd.company[0].companyName);
+      // console.log(Depositsdd.company[0].companyName);
     }, 1500);
     return () => clearInterval(stateInterval);
   }, []);
@@ -104,8 +105,8 @@ export default function CustomerViewDepositDetail({ navigation, route }) {
   }
 
   const XCD_Without_Zeroes = DepositDetail.Xcd.filter((e) => e.value !== 0);
-  console.log('XCD_With_Zeroes', DepositDetail);
-  console.log('XCD_Without_Zeroes', XCD_Without_Zeroes);
+  // console.log('XCD_With_Zeroes', DepositDetail);
+  // console.log('XCD_Without_Zeroes', XCD_Without_Zeroes);
 
   const totalAmountFooter = (title, amount) => {
     return (
@@ -215,7 +216,8 @@ export default function CustomerViewDepositDetail({ navigation, route }) {
             }
             <View style={{ flexDirection: 'row', marginTop: responsiveHeight(0.8) }}>
               <Text style={styles.subHeading}>{'Status: '}</Text>
-              <Text style={styles.normalTxt}>{DepositDetail?.status ? `${DepositDetail?.status}` : 'pending'}</Text>
+              {/* <Text style={styles.normalTxt}>{DepositDetail?.ScannedBySupervisor ? `approved` : 'pending'}</Text> */}
+              <Text style={styles.normalTxt}>{DepositDetail?.ScannedBySupervisor && DepositDetail?.ScannedBySecondSupervisor ? `approved` : 'pending'}</Text>
             </View>
           </View>
           <View

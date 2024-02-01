@@ -4,7 +4,7 @@ import { StyleSheet,View,FlatList, Text,Image,TouchableOpacity } from 'react-nat
 import { responsiveFontSize, responsiveScreenHeight, responsiveScreenWidth } from 'react-native-responsive-dimensions';
 //clicking on this will show single deposite detail
 export default function DepositApprovedByTeller({navigation,item,index, route }) {
-
+    
     return (
         
         
@@ -22,7 +22,7 @@ export default function DepositApprovedByTeller({navigation,item,index, route })
                 >
                    
                     <View style={styles.singleDepositContainer}>
-                        {item.ScannedByTeller?
+                        {item.ScannedBySecondSupervisor?
                         <>
                         <Image style={styles.imageStyle} source={require('../assets/approved.png')} />
                        

@@ -42,7 +42,7 @@ import ChangePassword from './screens/ChangePassword';
 import OTPScreen from './screens/OTPScreen/OTPScreen';
 import SetPinScreen from './screens/SetPinScreen/SetPinScreen';
 
-LogBox.ignoreAllLogs(false)
+LogBox.ignoreAllLogs(true)
 
 const store = configureStore()
 export default function App() {

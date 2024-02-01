@@ -17,7 +17,7 @@ export default function ApprovedDeposit({ navigation, item, index }) {
 
                     onPress={() => navigation.navigate('CustomerViewDepositDetail', { selectedItem: index })}
                 >
-                    {item.ScannedByTeller ?
+                    {item?.ScannedBySecondSupervisor ?
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             {item.ScannedByTeller ?
                                 <Image style={styles.imageStyle} source={require('../assets/approved.png')} /> :

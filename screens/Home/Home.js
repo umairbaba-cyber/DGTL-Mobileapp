@@ -75,7 +75,7 @@ export default function Home({navigation, route}) {
       let fcmToken = await AsyncStorage.getItem('fcmToken');
       if (!fcmToken) {
         fcmToken = await messaging().getToken();
-        console.log('token ---', fcmToken);
+        // console.log('token ---', fcmToken);
 
         if (fcmToken) {
           await AsyncStorage.setItem('fcmToken', fcmToken);
@@ -123,7 +123,7 @@ export default function Home({navigation, route}) {
       // user all completed deposits
       //his name ,account detail
       //his company info
-      console.log('token ---', token);
+      // console.log('token ---', token);
       LoadCustomerHomePageData(token);
     } else {
       //this function will get teller/supervisor detail such as
@@ -152,7 +152,7 @@ export default function Home({navigation, route}) {
         // console.log('teller home page data', JSON.stringify(res.data));
 
         const {code, data} = res.data;
-        console.log('Data ------', data);
+        // console.log('Data ------', data);
 
         if (code == 200) {
           setActive(res?.data?.data?.notification_active);
@@ -164,6 +164,7 @@ export default function Home({navigation, route}) {
             setMonthlyDeposit(0);
           }
           //store all pending list
+          console.log('*depositsAllTimePending*', data.depositsAllTimePending);
           setCustomerDeposit(data.depositsAllTimePending);
           //update user deposit record
           disPatch(UpdateUserDepositRecord(data));
@@ -177,7 +178,7 @@ export default function Home({navigation, route}) {
   //get customer data
 
   function LoadCustomerHomePageData(token) {
-    console.log(token);
+    // console.log(token);
     axios
       .get(BasePath + 'loadCustomerHomePage', {
         params: {
@@ -186,7 +187,7 @@ export default function Home({navigation, route}) {
       })
       .then(res => {
         const {code, data} = res.data;
-        console.log('home page api customer data', data);
+        // console.log('home page api customer data', data);
         if (code == 200) {
           setActive(res?.data?.data?.notification_active);
           if (data.totalDepositThisMonth.length > 0) {
@@ -196,7 +197,7 @@ export default function Home({navigation, route}) {
           } else {
             setMonthlyDeposit(0);
           }
-          // console.log('data -----', data.depositsThisMonth);
+          console.log('data -----', data.depositsThisMonth);
           setCustomerDeposit(data.depositsThisMonth);
           //update user deposit record
           disPatch(UpdateUserDepositRecord(data));
@@ -218,7 +219,7 @@ export default function Home({navigation, route}) {
   //   });
   //   return tempArray
   // }
-  console.log('customerDeposit -->', customerDeposit);
+  // console.log('customerDeposit -->', customerDeposit);
 
   function sortedData(dataArray) {
     const tempArray = dataArray.sort((a, b) => {

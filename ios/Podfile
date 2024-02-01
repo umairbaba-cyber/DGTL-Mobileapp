@@ -1,7 +1,7 @@
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 $RNFirebaseAsStaticFramework = true
-platform :ios, min_ios_version_supported
+platform :ios, '12.4'
 prepare_react_native_project!
 
 pod 'Firebase', :modular_headers => true
@@ -25,6 +25,16 @@ if linkage != nil
   Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
   use_frameworks! :linkage => linkage.to_sym
 end
+
+def set_target_for_all_pods(target_version)
+  pod_names = Dir.glob('node_modules/react-native/React/**/*.podspec').map { |file| File.basename(file, '.podspec') }
+
+  pod_names.each do |pod_name|
+    pod pod_name, :path => "node_modules/react-native/#{pod_name}", :inhibit_warnings => true, :target => ['NightScan']
+  end
+end
+
+set_target_for_all_pods('12.4')
 
 
 target 'NightScan' do

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, { Component, useState, useEffect } from 'react';
 import { View, ActivityIndicator, Text, StyleSheet, TouchableOpacity, Image, StatusBar } from 'react-native';
 import CustomHeader from '../../components/CustomHeader';
@@ -162,7 +163,8 @@ export default function CustomerViewDepositDetail({ navigation, route }) {
                         }
                         <View style={{ flexDirection: 'row', marginTop: responsiveHeight(0.8) }}>
                             <Text style={styles.subHeading}>{'Status: '}</Text>
-                            <Text style={styles.normalTxt}>{DepositDetail?.status ? `${DepositDetail?.status}` : 'pending'}</Text>
+                            {/* <Text style={styles.normalTxt}>{DepositDetail?.total?.status ? `approved` : 'pending'}</Text> */}
+                            <Text style={styles.normalTxt}>{DepositDetail?.ScannedBySupervisor && DepositDetail?.ScannedBySecondSupervisor ? `approved` : 'pending'}</Text>
                         </View>
                     </View>
                     <View style={{ flexDirection: 'row', marginTop: 20, alignItems: 'center', justifyContent: 'space-between' }}>

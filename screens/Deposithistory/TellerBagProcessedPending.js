@@ -22,11 +22,21 @@ export default function DepositHistory({ navigation, route }) {
     }
 
     function FilterList() {
+        // let isEmpty = DepositHistory.find(item => {
+        //     if (item.ScannedByTeller == false) {
+        //         return true
+        //     }
+        // });
         let isEmpty = DepositHistory.find(item => {
-            if (item.ScannedByTeller == false) {
-                return true
+            console.log('item.ScannedByTeller', item.ScannedByTeller);
+            if (item?.ScannedByTeller == false) {
+              return true;
             }
-        });
+            else if (item?.ScannedByTeller == true) {
+              return 'false';
+            }
+            
+          });
 
 
         if (DepositHistory?.length < 1) {

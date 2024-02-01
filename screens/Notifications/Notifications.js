@@ -34,8 +34,8 @@ export default function Notifications({ navigation }) {
                 const { code, data } = res.data
                 console.log('notification api data',data)
                 if (code == 200) {
-                    console.log('Notification',data.getNotifications)
-                    setNotifications(data.getNotifications)
+                    // console.log('Notification',data?.getNotifications)
+                    setNotifications(data?.getNotifications)
 
                 } else {
                     alert('Error while getting data')
@@ -60,7 +60,7 @@ export default function Notifications({ navigation }) {
                 </View> :
 
                 <FlatList
-                    data={notifications.reverse()}
+                    data={notifications?.reverse()}
                     showsVerticalScrollIndicator={false}
                     style={{flex: 1, marginTop: 20}}
                     renderItem={({ item, index, separators }) => (

@@ -40,7 +40,7 @@ export default function DepositApprovedByTeller({ navigation, item, index }) {
                 >
 
                     <View style={styles.singleDepositContainer}>
-                        {item.ScannedByTeller ?
+                        {item?.ScannedBySecondSupervisor ?
                             <>
                                 <Image style={styles.imageStyle} source={require('../assets/dgtl_app_completed.png')} />
 

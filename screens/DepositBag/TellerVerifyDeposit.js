@@ -332,6 +332,8 @@ export default function TellerVerifyDeposit({navigation, route}) {
       if (accountType === 'supervisor') {
         body.FirstSupervisorID = userId;
         body.FirstSupervisorName = userName;
+        body.SecondSupervisorID = userId;
+        body.SecondSupervisorName = userName;
       }
     } else if (sbt && !sbs) {
         if(accountType === 'supervisor'){
@@ -407,6 +409,12 @@ export default function TellerVerifyDeposit({navigation, route}) {
       body.discrepanciesType = checkType === 'Debit' ? checkType : 'Credit';
       body.discrepanciesAmount = amount;
       body.discrepanciesNote = note;
+    }
+    if(hasDiscrepancy){
+      body.discrepancies = true;
+      body.discrepanciesType = QRSingle?.discrepanciesType;
+      body.discrepanciesAmount = QRSingle?.discrepanciesAmount;
+      body.discrepanciesNote = QRSingle?.discrepanciesNote;
     }
 
     console.log('ScannedByTeller ---', ScannedByTeller);
@@ -603,7 +611,8 @@ export default function TellerVerifyDeposit({navigation, route}) {
               style={{flexDirection: 'row', marginTop: responsiveHeight(0.8)}}>
               <Text style={styles.subHeading}>{'Status: '}</Text>
               <Text style={styles.normalTxt}>
-                {QRSingle?.status ? `${QRSingle?.status}` : 'pending'}
+                {/* {QRSingle?.total?.status ? 'approved' : 'pending'} */}
+                {QRSingle?.ScannedBySupervisor && QRSingle?.ScannedBySecondSupervisor ? `approved` : 'pending'}
               </Text>
             </View>
           </View>

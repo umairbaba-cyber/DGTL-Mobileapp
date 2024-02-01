@@ -5,7 +5,7 @@ import { responsiveFontSize, responsiveHeight, responsiveScreenHeight, responsiv
 //clicking on this will show single deposite detail
 export default function CompletedPayment({ navigation, item, index }) {
 
-    if (item.ScannedByTeller)
+    if (item.ScannedBySecondSupervisor)
         return (
             <TouchableOpacity
                 keyExtractor={(item, index) => String(index)}

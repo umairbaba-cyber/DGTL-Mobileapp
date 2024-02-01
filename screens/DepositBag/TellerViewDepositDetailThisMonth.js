@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, { Component, useState, useEffect } from 'react';
 import { View, ActivityIndicator, Text, StyleSheet, TouchableOpacity, Image, StatusBar } from 'react-native';
 import CustomHeader from '../../components/CustomHeader';
@@ -17,18 +18,20 @@ export default function CustomerViewDepositDetail({ navigation, route }) {
     );
     const currencyArray = CurrencySymbole.split('-');
     const accountType = useSelector(state => state.Main.User.data.userData.accountType);
-    const DepositDetail = useSelector(state => route.params.status == 'pending' ? state.Main.UserDepositRecord.depositsThisMonthPending[route.params.selectedItem] : state.Main.UserDepositRecord.depositsThisMonthApproved[route.params.selectedItem]);
+    // const DepositDetail = useSelector(state => route.params.status == 'pending' ? state.Main.UserDepositRecord.depositsThisMonthPending[route.params.selectedItem] : state.Main.UserDepositRecord.depositsThisMonthApproved[route.params.selectedItem]);
+    const DepositDetail = useSelector(state => route.params.status == 'pending' ? state.Main.UserDepositRecord.depositsAllTimePending[route.params.selectedItem] : state.Main.UserDepositRecord.depositsThisMonthApproved[route.params.selectedItem]);
     const ScannedByTeller = useSelector(state => route.params.status == 'pending' ? state?.Main?.UserDepositRecord?.depositsThisMonthPending[route.params.selectedItem]?.ScannedByTeller : state?.Main?.UserDepositRecord?.depositsThisMonthApproved[route.params.selectedItem]?.ScannedByTeller);
     const ScannedBySupervisor = useSelector(state => route.params.status == 'pending' ? state?.Main?.UserDepositRecord?.depositsThisMonthPending[route.params.selectedItem]?.ScannedBySupervisor : state?.Main?.UserDepositRecord?.depositsThisMonthApproved[route.params.selectedItem]?.ScannedBySupervisor);
     const ScannedBySecondSupervisor = useSelector(state => route.params.status == 'pending' ? state?.Main?.UserDepositRecord?.depositsThisMonthPending[route.params.selectedItem]?.ScannedBySecondSupervisor : state?.Main?.UserDepositRecord?.depositsThisMonthApproved[route.params.selectedItem]?.ScannedBySecondSupervisor);
     const BigID = useSelector(state => state.Main.UserDepositRecord.depositsThisMonthPending[route.params.selectedItem]?.bagID);
     const [loading, setLoading] = useState(true)
     const customerNameqc = useSelector(state => state?.Main?.QrCodeScanedDetail?.customer?.name);
-    // console.log('user data abb',abbrevation)
+   
+//    console.log('UserDepositRecord', DepositDetail_alltime?.bagID);
     const data = route?.params
     const customerName = data?.item?.customer_details[0]?.name
     const userId = useSelector(state => state?.Main?.User?.data?.userData?._id);
-    console.log(customerName, customerNameqc)
+    // console.log(customerName, customerNameqc)
     useEffect(() => {
         setDiscrepancies(DepositDetail?.discrepancies)
         const stateInterval = setTimeout(() => {
@@ -37,12 +40,12 @@ export default function CustomerViewDepositDetail({ navigation, route }) {
 
         }, 1500);
         return () => clearInterval(stateInterval)
-    }, [])
-
+    }, [])   
+     
     const [discrepancies, setDiscrepancies] = useState('');
     const FirstSupervisorID = DepositDetail?.FirstSupervisorID
     const SecondSupervisorID = DepositDetail?.SecondSupervisorID
-    console.log("DepositDetail >>>", FirstSupervisorID, SecondSupervisorID, userId, ScannedBySecondSupervisor);
+    // console.log("DepositDetail >>>", FirstSupervisorID, SecondSupervisorID, userId, ScannedBySecondSupervisor);
 
     const getCoins = (name, value) => {
         let n = 0;
@@ -67,8 +70,8 @@ export default function CustomerViewDepositDetail({ navigation, route }) {
     }
 
     const XCD_Without_Zeroes = DepositDetail?.Xcd.filter((e) => e.value !== 0);
-    console.log('XCD_With_Zeroes', DepositDetail, accountType);
-    console.log('ScannedBySupervisor', ScannedBySupervisor);
+    // console.log('XCD_With_Zeroes', DepositDetail, accountType);
+    // console.log('ScannedBySupervisor', ScannedBySupervisor);
 
     const totalAmountFooter = (title, amount) => {
         return (
@@ -169,7 +172,8 @@ export default function CustomerViewDepositDetail({ navigation, route }) {
                         }
                         <View style={{ flexDirection: 'row', marginTop: responsiveHeight(0.8) }}>
                             <Text style={styles.subHeading}>{'Status: '}</Text>
-                            <Text style={styles.normalTxt}>{DepositDetail?.status ? `${DepositDetail?.status}` : 'pending'}</Text>
+                            {/* <Text style={styles.normalTxt}>{DepositDetail?.total?.status ? 'approved' : 'pending'}</Text> */}
+                            <Text style={styles.normalTxt}>{DepositDetail?.ScannedBySupervisor && DepositDetail?.ScannedBySecondSupervisor ? `approved` : 'pending'}</Text>
                         </View>
                     </View>
                     <View style={styles.breakDownView}>

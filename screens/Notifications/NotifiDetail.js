@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, { Component, useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity, Image, StatusBar } from 'react-native';
 import CustomHeader from '../../components/CustomHeader';
@@ -15,7 +16,24 @@ const NotifiDetail = ({ navigation, route }) => {
     const currencyArray = CurrencySymbole.split('-');
 
     const type = useSelector((state) => state?.Main?.User?.data?.userData?.accountType)
-    // console.log('checktype',type)
+    // const BigID = useSelector(state => state.Main?.UserDepositRecord?.depositsThisMonthPending[route.params?.index]?.bagID ?? '');
+    const BigID = useSelector(state => {
+        const depositsThisMonthPending = state.Main?.UserDepositRecord?.depositsThisMonthPending;
+      
+        // Check if depositsThisMonthPending is defined and has the expected structure
+        if (depositsThisMonthPending && Array.isArray(depositsThisMonthPending) && route.params?.index !== undefined) {
+          const deposit = depositsThisMonthPending[route.params.index];
+      
+          // Check if deposit is defined and has the bagID property
+          if (deposit && deposit.bagID !== undefined) {
+            return deposit.bagID;
+          }
+        }
+      
+        // If any of the checks fail, return a default value or handle the situation accordingly
+        return ''; // Set defaultValue to an appropriate value or handle the situation as needed
+      });
+      
     const [loading, setLoading] = useState(true)
     const index = route?.params?.index
     const item = route?.params?.item?.qr_data[0]
@@ -169,7 +187,8 @@ const NotifiDetail = ({ navigation, route }) => {
                         }
                         <View style={{ flexDirection: 'row', marginTop: responsiveHeight(0.8) }}>
                             <Text style={styles.subHeading}>{'Status: '}</Text>
-                            <Text style={styles.normalTxt}>{item?.status ? `${item?.status}` : 'pending'}</Text>
+                            {/* <Text style={styles.normalTxt}>{item?.total?.status ? `approved` : 'pending'}</Text> */}
+                            <Text style={styles.normalTxt}>{item?.ScannedBySupervisor && item?.ScannedBySecondSupervisor ? `approved` : 'pending'}</Text>
                         </View>
                     </View>
                     <View style={{ flexDirection: 'row', marginTop: 20, alignItems: 'center', justifyContent: 'space-between' }}>
