@@ -99,7 +99,7 @@ android {
         applicationId "com.nightscan"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 7
+        versionCode 8
         versionName "1.2"
         missingDimensionStrategy 'react-native-camera', 'general' 
     }
@@ -135,7 +135,39 @@ android {
             
         }
     }
-
+ packagingOptions {
+        exclude 'drawable-mdpi/assets_moneybag1.png'
+        exclude 'drawable-mdpi/assets_left.png'
+        exclude 'drawable-mdpi/assets_image8.png'
+        exclude 'drawable-mdpi/assets_dgtl_app_showpassword.png'
+        exclude 'drawable-mdpi/assets_dgtl_app_qr_top.png'
+        exclude 'drawable-mdpi/assets_moneybag3.png'
+        exclude 'drawable-mdpi/assets_editinputicon.png'
+        exclude 'drawable-mdpi/src_assets_images_login.png'
+        exclude 'drawable-mdpi/assets_checked.png'
+        exclude 'drawable-mdpi/assets_eye3.png'
+        exclude 'drawable-mdpi/assets_dgtl_app_deposits.png'
+        exclude 'drawable-mdpi/assets_dgtl_reports.png'
+        exclude 'drawable-mdpi/assets_approved.png'
+        exclude 'drawable-mdpi/assets_noti_active.png'
+        exclude 'drawable-mdpi/assets_rightarrow.png'
+        exclude 'drawable-mdpi/assets_dgtl_app_completed.png'
+        exclude 'drawable-mdpi/assets_dgtl_app_settings.png'
+        exclude 'drawable-mdpi/assets_submit.png'
+        exclude 'drawable-mdpi/assets_dgtl_app_pending.png'
+        exclude 'drawable-mdpi/assets_backarrow.png'
+        exclude 'drawable-mdpi/assets_dgtl_app_exit.png'
+        exclude 'drawable-mdpi/assets_dgtl_home.png'
+        exclude 'drawable-mdpi/assets_pin.png'
+        exclude 'drawable-mdpi/assets_pending.png'
+        exclude 'drawable-mdpi/assets_dgtl_app_hidepassword.png'
+        exclude 'drawable-mdpi/assets_fingerprint.png'
+        exclude 'drawable-mdpi/assets_notified.png'
+        exclude 'drawable-mdpi/assets_dgtl_app_scan.png'
+        exclude 'drawable-mdpi/assets_face.png'
+        exclude 'drawable-mdpi/assets_dgtl_icon_610.png'
+    }
+    
     // applicationVariants are e.g. debug, release
     applicationVariants.all { variant ->
         variant.outputs.each { output ->
@@ -149,6 +181,9 @@ android {
                         defaultConfig.versionCode * 1000 + versionCodes.get(abi)
             }
 
+        }
+         variant.mergeResources.doLast {
+            delete(fileTree(dir: variant.mergeResources.outputDir, include: '**/assets_*'))
         }
     }
 }

@@ -1,5 +1,13 @@
-import React, { Component, useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, ActivityIndicator, StatusBar} from 'react-native';
+import React, {Component, useState, useEffect} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  ActivityIndicator,
+  StatusBar,
+} from 'react-native';
 import CustomHeader from '../../components/CustomHeader';
 import {
   responsiveFontSize,
@@ -7,16 +15,15 @@ import {
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
-import { ScrollView } from 'react-native-gesture-handler';
-import { useSelector } from 'react-redux';
+import {ScrollView} from 'react-native-gesture-handler';
+import {useSelector} from 'react-redux';
 import axios from 'axios';
 import BasePath from '../../config/BasePath';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //it is sixth scrren
 //on this screen user is shown his deposit is completed when he click on button he he navigated back to main screen
-const CompleteDepositCustomer = ({ navigation, route, props }) => {
-
+const CompleteDepositCustomer = ({navigation, route, props}) => {
   const CurrencySymbole = useSelector(
     state => state?.Main?.User?.data?.company.localCurrency,
   );
@@ -61,22 +68,17 @@ const CompleteDepositCustomer = ({ navigation, route, props }) => {
   const NavigateBackToHome = async () => {
     setLoading(true);
     await axios
-      .post(
-        BasePath + 'customerDepositRequest', 
-        data,
-        {
-          params: {
-            x_auth: token,
-          },
+      .post(BasePath + 'customerDepositRequest', data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      )
+      })
       .then(res => {
-        setLoading(false)
+        setLoading(false);
         console.log('verify api data', res.data);
 
         if (res.data.data.qrsingle.ScannedByCustomer == true) {
-
-          navigation.reset({ index: 0, routes: [{ name: 'Home' }] });
+          navigation.reset({index: 0, routes: [{name: 'Home'}]});
 
           // navigation.navigate('CompleteDepositCustomer',res.data)
         } else {
@@ -84,19 +86,19 @@ const CompleteDepositCustomer = ({ navigation, route, props }) => {
         }
       })
       .catch(e => {
-        setLoading(false)
+        setLoading(false);
         alert(e.response.data.message);
         console.log('error is', e.response.data);
       });
   };
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
-      <StatusBar backgroundColor={'#fff'} barStyle={'dark-content'}/>
-      <View style={{ marginHorizontal: responsiveWidth(4) }}>
+    <ScrollView style={{flex: 1, backgroundColor: '#fff'}}>
+      <StatusBar backgroundColor={'#fff'} barStyle={'dark-content'} />
+      <View style={{marginHorizontal: responsiveWidth(4)}}>
         <CustomHeader name={'Verify Deposit'} navigation={navigation} />
       </View>
       <Text style={styles.confirmText}>CONFIRM </Text>
-      <View style={{ alignSelf: 'center' }}>
+      <View style={{alignSelf: 'center'}}>
         <Text style={styles.textSize}>
           Digital Deposit ID :{' '}
           {abbrevation.concat(
@@ -112,18 +114,14 @@ const CompleteDepositCustomer = ({ navigation, route, props }) => {
         <Text style={styles.textSize}> {companyName}</Text>
         <Text style={styles.textSize}>Name: {userData?.name}</Text>
         <Text style={styles.textSize}>ACCT# {accountNumber}</Text>
-        <Text
-          style={styles.submit}>
-          Click Submit to confirm
-        </Text>
+        <Text style={styles.submit}>Click Submit to confirm</Text>
       </View>
-      <View style={{ marginTop: responsiveHeight(20) }} />
+      <View style={{marginTop: responsiveHeight(20)}} />
       {/* () =>navigation.reset({index: 0,routes: [{name: "Home"}],}) */}
       <TouchableOpacity
         onPress={() => NavigateBackToHome()}
         style={styles.loginButton}
-        disabled={isLoading ? true : false}
-      >
+        disabled={isLoading ? true : false}>
         <Image
           source={require('../../assets/submit.png')}
           style={{
@@ -141,9 +139,13 @@ const CompleteDepositCustomer = ({ navigation, route, props }) => {
           }}>
           Submit
         </Text>
-        {isLoading &&
-          <ActivityIndicator color={'#686868'} size={'small'} style={{ marginLeft: 10 }} />
-        }
+        {isLoading && (
+          <ActivityIndicator
+            color={'#686868'}
+            size={'small'}
+            style={{marginLeft: 10}}
+          />
+        )}
       </TouchableOpacity>
     </ScrollView>
   );

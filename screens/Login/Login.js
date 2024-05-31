@@ -33,9 +33,9 @@ import {useIsFocused} from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 export default function Login({navigation}) {
   //for editing user email
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState('ybiteller@iicdev.com');
   //for editing password
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState('YBI@dmin123');
   //an indicator to show if state loading  is not completed
   const [isLoading, setIsLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -109,146 +109,25 @@ export default function Login({navigation}) {
             password: password,
           })
           .then(res => {
-            console.log('calling 2');
-            console.log('res login', res.data.data.company.FXAllowed);
+            // console.log('res login', res.data.data.company.FXAllowed);
             console.log('res login --- >', res.data);
+            console.log('option', option);
             if (res?.data?.code == 200) {
               console.log('code avail');
               console.log('calling 3');
-              setUserData(res?.data);
-
-              if (email == '1NBSupervisor@iicdev.com' || option != 0) {
-                setModalVisible(false);
-              } else {
-                setModalVisible(true); /// SetPinScreen
-              }
-
-              AsyncStorage.setItem('email1', email);
-              AsyncStorage.setItem('password1', password);
-              if (option == 1) {
-                console.log('calling 4');
-                console.log('option1 ==> ', option);
-                AsyncStorage.setItem('biometric', 'biometric');
-                // AsyncStorage.clear();
-                if (fingerPrintEnabled) {
-                  TouchID.authenticate(
-                    'Login with biometrics is an easier, more secure way to access your Account',
-                    optionalConfigObject,
-                  )
-                    .then(success => {
-                      AsyncStorage.setItem('token', res?.data?.data?.token);
-                      disPatch(GetUserData(res.data));
-                      navigation.replace('Home');
-                    })
-                    .catch(error => {
-                      console.log(error);
-                      Alert.alert(
-                        'Failed',
-                        'Do you want to disable the biometric login.',
-                        [
-                          {text: 'No', onPress: () => {}},
-                          {
-                            text: 'Yes',
-                            onPress: async () => {
-                              await AsyncStorage.removeItem('biometric');
-                              setOption(0);
-                            },
-                          },
-                        ],
-                      );
-                    });
-                } else {
-                  Alert.alert('Your device dont have fingerprint sensor');
-                  setOption(4);
-                }
-              } else if (option == 2) {
-                console.log('calling 6');
-                console.log('option2 ==> ', option);
-                AsyncStorage.setItem('biometric', 'face');
-                // AsyncStorage.clear();
-                TouchID.isSupported()
-                  .then(supported => {
-                    console.log('Supported or not', supported);
-                    if (supported) {
-                      const optionalConfigObject = {
-                        unifiedErrors: true,
-                      };
-                      TouchID.authenticate(
-                        'Login with biometrics is an easier, more secure way to access your Account',
-                        optionalConfigObject,
-                      )
-                        .then(success => {
-                          if (success) {
-                            AsyncStorage.setItem(
-                              'token',
-                              res?.data?.data?.token,
-                            );
-                            disPatch(GetUserData(res.data));
-                            navigation.replace('Home');
-                          } else {
-                            Alert.alert('Authentication Failed');
-                          }
-                        })
-                        .catch(error => {
-                          console.log('error --->>>', error);
-                          Alert.alert(
-                            'Failed',
-                            'Do you want to disable the biometric login.',
-                            [
-                              {text: 'No', onPress: () => {}},
-                              {
-                                text: 'Yes',
-                                onPress: async () => {
-                                  await AsyncStorage.removeItem('biometric');
-                                  setOption(0);
-                                },
-                              },
-                            ],
-                          );
-                        });
-                    } else {
-                      Alert.alert(
-                        'Face ID is not supported or not enrolled on this device.',
-                      );
-                    }
-                  })
-                  .catch(error => {
-                    console.error('Face ID', error);
-                    Alert.alert('Error checking Face ID support.');
-                  });
-                // AsyncStorage.setItem('biometric', 'face');
-              } else if (option === 3) {
-                console.log('calling 7');
-                // console.log("res?.data: ", res?.data);
-                try {
-                  console.log('option3 ==> ', option);
-                  AsyncStorage.setItem('biometric', 'pin');
-                  navigation.navigate('SetPinScreen', {
-                    data: res?.data,
-                    screen: 'login',
-                  });
-                } catch (error) {
-                  console.log('loginError: ', error);
-                }
-              } else if (option == 4) {
-                console.log('calling 8');
-                console.log('option1 ==> ', option);
-
-                // AsyncStorage.clear();
-                AsyncStorage.removeItem('biometric');
-                AsyncStorage.removeItem('pinCode');
-
-                AsyncStorage.setItem('token', res?.data?.data?.token);
-                disPatch(GetUserData(res.data));
-                navigation.replace('Home');
-              }
-
-              // AsyncStorage.setItem('token', res?.data?.data?.token);
-
-              //GetUserData
-              //this function will store user login info
-              // disPatch(GetUserData(res.data));
-              // navigation.replace('Home');
+              Toast.show({
+                type: 'success',
+                text1: res?.data?.message,
+              });
+              setTimeout(() => {
+                navigation.navigate('OTPScreen', {
+                  comingFrom: 'login',
+                  email: email,
+                  password: password,
+                  optionPrev: option,
+                  fingerPrintEnabledPrev: fingerPrintEnabled,
+                });
+              }, 500);
             } else {
               setIsLoading(false);
               alert('Something went wrong error' + res.data.code);
@@ -256,8 +135,8 @@ export default function Login({navigation}) {
           })
           .catch(e => {
             const errorMessage = e?.response?.data?.message;
-            console.log('Error -->>', errorMessage);        
-            Toast.show({ type: 'error', text1: `${errorMessage ?? e}`});
+            console.log('Error -->>', errorMessage);
+            Toast.show({type: 'error', text1: `${errorMessage ?? e}`});
           });
       } else {
         alert('Enter Valid Password');
@@ -276,7 +155,6 @@ export default function Login({navigation}) {
     navigation.navigate('ForgotPassword');
     // navigation.navigate('SetPinScreen');
   }
-
   const windowDimesions = useWindowDimensions();
   const isTablet = windowDimesions.width >= 600;
   return (
@@ -349,7 +227,23 @@ export default function Login({navigation}) {
               />
             </TouchableOpacity>
           </View>
-
+          <TouchableOpacity
+            style={{
+              marginHorizontal: 40,
+            }}
+            onPress={() => forgotPassword()}>
+            <Text
+              style={[
+                styles.forgotPasswordText,
+                {
+                  fontSize: isTablet
+                    ? responsiveFontSize(1.5)
+                    : responsiveFontSize(1.9),
+                },
+              ]}>
+              Forgot Password ?
+            </Text>
+          </TouchableOpacity>
           {isLoading ? (
             <ActivityIndicator />
           ) : (
@@ -447,19 +341,6 @@ export default function Login({navigation}) {
             </View>
           ) : null} */}
 
-          <TouchableOpacity onPress={() => forgotPassword()}>
-            <Text
-              style={[
-                styles.forgotPasswordText,
-                {
-                  fontSize: isTablet
-                    ? responsiveFontSize(1.5)
-                    : responsiveFontSize(1.9),
-                },
-              ]}>
-              Forgot Password ?
-            </Text>
-          </TouchableOpacity>
           <Text
             onPress={() =>
               Linking.openURL('https://digitaldeposits.app/privacy')
@@ -547,7 +428,7 @@ export default function Login({navigation}) {
           </View>
         </View>
       </Modal>
-      <Toast position='bottom' />
+      <Toast position="bottom" />
     </View>
   );
 }
@@ -618,9 +499,11 @@ const styles = StyleSheet.create({
   forgotPasswordText: {
     color: '#18193F',
     fontWeight: '700',
-    marginLeft: '10%',
+    // marginLeft: '10%',
     fontSize: responsiveFontSize(1.9),
-    marginTop: responsiveHeight(5),
+    // marginTop: responsiveHeight(5),
+    alignSelf: 'flex-end',
+    marginTop: 5,
   },
   privacyText: {
     color: '#18193F',

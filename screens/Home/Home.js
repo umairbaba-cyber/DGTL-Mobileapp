@@ -102,8 +102,8 @@ export default function Home({navigation, route}) {
           fcm: fcmToken,
         },
         {
-          params: {
-            x_auth: token,
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
         },
       )
@@ -115,7 +115,7 @@ export default function Home({navigation, route}) {
   async function GetUserDetail() {
     //getting token from async storage
     let token = await AsyncStorage.getItem('token');
-
+    console.log('token', token);
     //Load Customer Home Page API this api will load data for home page
     if (users.accountType == 'customer') {
       //this function will get user detail such as
@@ -142,14 +142,15 @@ export default function Home({navigation, route}) {
 
   //get teller data
   function LoadTellerHomePageData(token) {
+    console.log('LoadTellerHomePageData-call');
     axios
       .get(BasePath + 'loadTellerHomePage', {
-        params: {
-          x_auth: token,
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
       })
       .then(res => {
-        // console.log('teller home page data', JSON.stringify(res.data));
+        console.log('teller home page data', JSON.stringify(res.data));
 
         const {code, data} = res.data;
         // console.log('Data ------', data);
@@ -172,17 +173,20 @@ export default function Home({navigation, route}) {
           alert('Error While getting data');
         }
       })
-      .catch(e => console.log(alert('Error occured ', e.response.data)));
+      .catch(e => {
+        console.log(alert('Error occured ', e.response.data));
+        console.log('teller home page data', JSON.stringify(e.response.data));
+      });
   }
 
   //get customer data
 
   function LoadCustomerHomePageData(token) {
-    // console.log(token);
+    console.log('loadCustomerHomePage-call');
     axios
       .get(BasePath + 'loadCustomerHomePage', {
-        params: {
-          x_auth: token,
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
       })
       .then(res => {

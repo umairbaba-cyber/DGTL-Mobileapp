@@ -12,11 +12,12 @@ export default function QrCode({navigation, route}) {
   const [userToken, setUserToekn] = useState('');
   const dispatch = useDispatch();
   const users = useSelector(state => state.Main.User.data?.userData);
-  const userslimit = useSelector(state => state.Main.User.data?.userData.daily_limit);
+  const userslimit = useSelector(
+    state => state.Main.User.data?.userData.daily_limit,
+  );
   console.log('UU', users);
-// console.log('userslimit', userslimit);
+  // console.log('userslimit', userslimit);
 
-  
   useEffect(() => {
     GetToken();
   }, []);
@@ -45,16 +46,16 @@ export default function QrCode({navigation, route}) {
       bagID: data[2],
     };
 
-    console.log("qr_detail: ",qr_detail);
+    console.log('qr_detail: ', qr_detail);
     //if qr bag id match with scanned
     // this route.params?.BagID is coming from TellerBagProcessedPending screen inside Deposithistory folder
     if (route.params?.BagID) {
-    console.log("This is bag iddddddddddd", route.params?.BagID)
+      console.log('This is bag iddddddddddd', route.params?.BagID);
       // if (route.params?.BagID != qr_detail.bagID) {
       //   alert('Bag id does not match');
       //   return;
       // } else {
-        scanQrCode(qr_detail);
+      scanQrCode(qr_detail);
       // }
     } else {
       scanQrCode(qr_detail);
@@ -72,8 +73,8 @@ export default function QrCode({navigation, route}) {
           bagID: qr.bagID,
         },
         {
-          params: {
-            x_auth: userToken,
+          headers: {
+            Authorization: `Bearer ${userToken}`,
           },
         },
       )

@@ -336,41 +336,41 @@ export default function TellerVerifyDeposit({navigation, route}) {
         body.SecondSupervisorName = userName;
       }
     } else if (sbt && !sbs) {
-        if(accountType === 'supervisor'){
-            console.log('------c------');
-            endpoint = 'SupervisorCheckRequest';
-            if (!limitExceed) {
-              ScannedByTeller = true;
-              ScannedBySupervisor = true;
-              ScannedBySecondSupervisor = true;
-              status = 'verified';
-            } else {
-              ScannedBySupervisor = true;
-              ScannedByTeller = true;
-              ScannedBySecondSupervisor = true;
-              status = 'verified';
-            }
-            body = {
-              // total: total,
-              bagID: bagID,
-              customerID: customerID,
-              clientID: clientID,
-              Xcd: xcdChanged,
-              checks: checksChanged,
-              total: totalChanged,
-              FX: fxChanged,
-              ScannedByTeller: ScannedByTeller,
-              ScannedBySupervisor: ScannedBySupervisor,
-              ScannedBySecondSupervisor: ScannedBySecondSupervisor,
-              status: status,
-              FirstSupervisorID: userId,
-              FirstSupervisorName: userName,
-              SecondSupervisorID: userId,
-              SecondSupervisorName: userName,
-            };
-        }else{
-            alert('Please scan as a supervisor')
+      if (accountType === 'supervisor') {
+        console.log('------c------');
+        endpoint = 'SupervisorCheckRequest';
+        if (!limitExceed) {
+          ScannedByTeller = true;
+          ScannedBySupervisor = true;
+          ScannedBySecondSupervisor = true;
+          status = 'verified';
+        } else {
+          ScannedBySupervisor = true;
+          ScannedByTeller = true;
+          ScannedBySecondSupervisor = true;
+          status = 'verified';
         }
+        body = {
+          // total: total,
+          bagID: bagID,
+          customerID: customerID,
+          clientID: clientID,
+          Xcd: xcdChanged,
+          checks: checksChanged,
+          total: totalChanged,
+          FX: fxChanged,
+          ScannedByTeller: ScannedByTeller,
+          ScannedBySupervisor: ScannedBySupervisor,
+          ScannedBySecondSupervisor: ScannedBySecondSupervisor,
+          status: status,
+          FirstSupervisorID: userId,
+          FirstSupervisorName: userName,
+          SecondSupervisorID: userId,
+          SecondSupervisorName: userName,
+        };
+      } else {
+        alert('Please scan as a supervisor');
+      }
     } else if (!sbt && sbs) {
       console.log('aaaaaaaaaaaaaaa', sbt, sbs);
       console.log('------d------');
@@ -410,7 +410,7 @@ export default function TellerVerifyDeposit({navigation, route}) {
       body.discrepanciesAmount = amount;
       body.discrepanciesNote = note;
     }
-    if(hasDiscrepancy){
+    if (hasDiscrepancy) {
       body.discrepancies = true;
       body.discrepanciesType = QRSingle?.discrepanciesType;
       body.discrepanciesAmount = QRSingle?.discrepanciesAmount;
@@ -427,38 +427,38 @@ export default function TellerVerifyDeposit({navigation, route}) {
     console.log('url ----', BasePath + endpoint);
     console.log('supervisorId ----', userId);
 
-    setLoading(true)
-    await axios.post(BasePath + endpoint,
-        body, {
-        params: {
-            x_auth: token
-        }
-    }
-    ).then(res => {
-        setLoading(false)
-        const { data, code } = res.data
-        console.log('tellerCheck request data ---', data)
+    setLoading(true);
+    await axios
+      .post(BasePath + endpoint, body, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(res => {
+        setLoading(false);
+        const {data, code} = res.data;
+        console.log('tellerCheck request data ---', data);
 
         if (code == 200) {
-            navigation.navigate('CompleteDeposit', {
-                data: data,
-                discrepancy: found === "Yes" ? found : "No",
-                discrepanciesType: checkType === "Debit" ? checkType : "Credit",
-                discrepanciesAmount: amount,
-                discrepanciesNote: note,
-                QRSingle: QRSingle,
-                accountType: accountType,
-                QrCodeScanedDetail: QrCodeScanedDetail,
-            })
+          navigation.navigate('CompleteDeposit', {
+            data: data,
+            discrepancy: found === 'Yes' ? found : 'No',
+            discrepanciesType: checkType === 'Debit' ? checkType : 'Credit',
+            discrepanciesAmount: amount,
+            discrepanciesNote: note,
+            QRSingle: QRSingle,
+            accountType: accountType,
+            QrCodeScanedDetail: QrCodeScanedDetail,
+          });
         } else {
-            alert("Server Error in Processing request")
+          alert('Server Error in Processing request');
         }
-
-    }).catch((e) => {
-        setLoading(false)
-        alert(e.response.data.message)
-        console.log('error is is----->', e.response.data)
-    })
+      })
+      .catch(e => {
+        setLoading(false);
+        alert(e.response.data.message);
+        console.log('error is is----->', e.response.data);
+      });
   }
 
   const getCoins = (name, value) => {
@@ -612,7 +612,10 @@ export default function TellerVerifyDeposit({navigation, route}) {
               <Text style={styles.subHeading}>{'Status: '}</Text>
               <Text style={styles.normalTxt}>
                 {/* {QRSingle?.total?.status ? 'approved' : 'pending'} */}
-                {QRSingle?.ScannedBySupervisor && QRSingle?.ScannedBySecondSupervisor ? `approved` : 'pending'}
+                {QRSingle?.ScannedBySupervisor &&
+                QRSingle?.ScannedBySecondSupervisor
+                  ? `approved`
+                  : 'pending'}
               </Text>
             </View>
           </View>
