@@ -33,9 +33,9 @@ import {useIsFocused} from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 export default function Login({navigation}) {
   //for editing user email
-  const [email, setEmail] = useState('ybiteller@iicdev.com');
+  const [email, setEmail] = useState('');
   //for editing password
-  const [password, setPassword] = useState('YBI@dmin123');
+  const [password, setPassword] = useState('');
   //an indicator to show if state loading  is not completed
   const [isLoading, setIsLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
