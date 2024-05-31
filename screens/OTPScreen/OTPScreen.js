@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   Modal,
   Alert,
+  SafeAreaView,
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {
@@ -381,7 +382,7 @@ export default function OTPScreen({navigation, route}) {
     }
   }, [option]);
   return (
-    <View style={styles.loginContainer}>
+    <SafeAreaView style={styles.loginContainer}>
       <TouchableOpacity
         style={{padding: 10}}
         onPress={() => navigation.goBack()}>
@@ -518,7 +519,7 @@ export default function OTPScreen({navigation, route}) {
         </View>
       </Modal>
       <Toast position="top" />
-    </View>
+    </SafeAreaView>
   );
 }
 
