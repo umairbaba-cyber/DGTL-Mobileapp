@@ -63,3 +63,4 @@ yarn-error.log
 .metro-health-check*
 android/app/src/main/assets/index.android.bundle
 android/app/src/main/assets/index.android.bundle
+config.bat

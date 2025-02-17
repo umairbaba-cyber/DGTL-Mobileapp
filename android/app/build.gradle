@@ -99,8 +99,8 @@ android {
         applicationId "com.nightscan"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 8
-        versionName "1.2"
+        versionCode 9
+        versionName "1.3"
         missingDimensionStrategy 'react-native-camera', 'general' 
     }
 
