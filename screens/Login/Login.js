@@ -164,7 +164,7 @@ export default function Login({navigation}) {
         <View>
           <Image
             style={styles.imageStyle}
-            source={require('../../src/assets/images/login.png')}
+            source={require('../../src/assets/images/dgtl_logo.webp')}
           />
         </View>
         <View>
